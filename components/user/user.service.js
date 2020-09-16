@@ -10,6 +10,10 @@ class UserRepository {
 		}
 	}
 
+	async getUserProfile(userId) {
+		return await this.User.getUserProfile(userId)
+	}
+
 	async login(params) {
 		const user = await this.User.findByCredentials(
 			params.email,

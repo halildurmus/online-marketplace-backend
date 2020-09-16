@@ -3,6 +3,16 @@ const Repository = require('./user.service')
 const repo = new Repository()
 
 module.exports = {
+	async getUserProfile(userId) {
+		const data = await repo.getUserProfile(userId)
+
+		if (!data) {
+			throw new APIError(500, `Get user profile failed.`)
+		}
+
+		return data
+	},
+
 	async login(fields) {
 		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
 			throw new APIError(400, `Fields can't be blank.`)
