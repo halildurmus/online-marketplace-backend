@@ -1,4 +1,4 @@
 module.exports = {
-	APIError: require('./APIError'),
 	loggers: require('./logger'),
+	text: require('./text'),
 }

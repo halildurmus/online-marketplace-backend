@@ -1,7 +1,29 @@
+const { APIError } = require('../helpers')
 const { nodeEnv } = require('../config')
-const { APIError, loggers } = require('../utils')
+const { loggers } = require('../utils')
 const httpStatus = require('http-status')
 const logger = loggers.loggerServer
+
+const handleCastErrorDB = (err) => {
+	const message = `Invalid ${err.path}: ${err.value}`
+	return new APIError(400, message)
+}
+const handleDuplicateFieldsDB = (err) => {
+	const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]
+	const message = `Duplicate field value ${value}. Please use another value!`
+	return new APIError(400, message)
+}
+const handleValidationErrorDB = (err) => {
+	const errors = Object.values(err.errors).map((el) => el.message)
+	const message = `Invalid input data. ${errors.join('. ')}`
+	return new APIError(400, message)
+}
+
+const handleJWTError = () =>
+	new APIError(401, 'Invalid token. Please log in again!')
+
+const handleJWTExpiredError = () =>
+	new APIError(401, 'Your token has expired! Please log in again.')
 
 const sendErrorDev = (err, res) => {
 	logger.error('ERROR 💥:', err)
@@ -23,7 +45,7 @@ const sendErrorProd = (err, res) => {
 		})
 
 		// Programming or other unknown error.
-	} else if (err.isOperational === false) {
+	} else {
 		// 1) Logs error.
 		logger.error('ERROR 💥:', err)
 
@@ -43,7 +65,15 @@ exports.handler = (err, req, res, next) => {
 	if (nodeEnv === 'development') {
 		sendErrorDev(err, res)
 	} else if (nodeEnv === 'production') {
-		sendErrorProd(err, res)
+		let error = { ...err }
+
+		if (err.name === 'CastError') error = handleCastErrorDB(err)
+		if (err.code === 11000) error = handleDuplicateFieldsDB(err)
+		if (err.name === 'ValidationError') error = handleValidationErrorDB(err)
+		if (err.name === 'JsonWebTokenError') error = handleJWTError()
+		if (err.name === 'TokenExpiredError') error = handleJWTExpiredError()
+
+		sendErrorProd(error, res)
 	}
 }
 

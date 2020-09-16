@@ -23,6 +23,7 @@ const loggerOptions = (service = 'server') => {
 	}
 }
 
+const loggerMongodb = loggers.add('mongodb', loggerOptions('mongodb'))
 const loggerRedis = loggers.add('redis', loggerOptions('redis'))
 const loggerServer = loggers.add('server', loggerOptions())
 
@@ -36,9 +37,11 @@ if (nodeEnv !== 'production') {
 	const transportConsole = new transports.Console({
 		format: combine(timestamp(), colorize(), myFormat),
 	})
+	loggerMongodb.add(transportConsole)
 	loggerRedis.add(transportConsole)
 	loggerServer.add(transportConsole)
 }
 
+module.exports.loggerMongodb = loggers.get('mongodb')
 module.exports.loggerRedis = loggers.get('redis')
 module.exports.loggerServer = loggers.get('server')
