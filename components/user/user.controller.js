@@ -1,6 +1,6 @@
 const { APIError } = require('../../helpers')
-const Repository = require('./user.service')
-const repo = new Repository()
+const Service = require('./user.service')
+const repo = new Service()
 
 module.exports = {
 	async getUserProfile(userId) {
@@ -47,15 +47,29 @@ module.exports = {
 		return { message: 'Logout all successful.' }
 	},
 
-	async register(fields) {
+	async createUser(fields) {
 		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
 			throw new APIError(400, `Fields can't be blank.`)
 		}
 
-		const data = await repo.create(fields)
+		const data = await repo.createUser(fields)
 
 		if (!data) {
 			throw new APIError(500, `Registration failed.`)
+		}
+
+		return data
+	},
+
+	async updateUser(userId, fields) {
+		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
+			throw new APIError(400, `Fields can't be blank.`)
+		}
+
+		const data = await repo.updateUser(userId, fields)
+
+		if (!data) {
+			throw new APIError(500, 'Update user failed.')
 		}
 
 		return data

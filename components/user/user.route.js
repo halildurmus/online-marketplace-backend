@@ -1,12 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync } = require('../../middlewares')
+const { isValidOperation } = require('./user.util')
 const {
 	getUserProfile,
 	login,
 	logout,
 	logoutAll,
-	register,
+	createUser,
+	updateUser,
 } = require('./user.controller')
 
 router.post(
@@ -39,7 +41,7 @@ router.post(
 router.post(
 	'/auth/register',
 	catchAsync(async (req, res) => {
-		res.status(201).json(await register(req.body))
+		res.status(201).json(await createUser(req.body))
 	})
 )
 
@@ -51,11 +53,29 @@ router.get(
 	})
 )
 
+router.patch(
+	'/users/me',
+	auth,
+	isValidOperation,
+	catchAsync(async (req, res) => {
+		res.json(await updateUser(req.user.id, req.body))
+	})
+)
+
 router.get(
 	'/users/:id',
 	auth,
 	catchAsync(async (req, res) => {
 		res.json(await getUserProfile(req.params.id))
+	})
+)
+
+router.patch(
+	'/users/:id',
+	auth,
+	isValidOperation,
+	catchAsync(async (req, res) => {
+		res.json(await updateUser(req.params.id, req.body))
 	})
 )
 

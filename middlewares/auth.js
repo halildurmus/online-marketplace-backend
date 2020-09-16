@@ -9,7 +9,7 @@ module.exports = catchAsync(async (req, res, next) => {
 	let token = req.header('Authorization')
 
 	if (!token) {
-		throw new APIError(400, 'Authorization header not found.')
+		throw new APIError(400, 'Authorization token not found.')
 	}
 
 	token = parseAuthToken(token)
