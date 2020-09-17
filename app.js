@@ -4,6 +4,7 @@ const corsOptions = { optionsSuccessStatus: 200 }
 const { error } = require('./middlewares')
 const express = require('express')
 const app = express()
+const listingRouter = require('./components/listing/listing.route')
 const userRouter = require('./components/user/user.route')
 
 app.use(cors(corsOptions))
@@ -11,6 +12,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Routes
+app.use(apiPrefix, listingRouter)
 app.use(apiPrefix, userRouter)
 
 // If the error is not an instanceOf APIError, convert it.

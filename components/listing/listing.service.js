@@ -42,6 +42,16 @@ class ListingService {
 
 		return listing
 	}
+
+	async removeListing(id) {
+		const listing = await this.Listing.findById(id)
+
+		return await listing.remove()
+	}
+
+	async updateListing(id, fields) {
+		return await this.Listing.updateListing(id, fields)
+	}
 }
 
 module.exports = ListingService

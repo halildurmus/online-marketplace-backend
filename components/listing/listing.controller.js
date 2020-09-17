@@ -32,4 +32,28 @@ module.exports = {
 
 		return data
 	},
+
+	async removeListing(id) {
+		const data = await repo.removeListing(id)
+
+		if (!data) {
+			throw new APIError(500, `Remove listing failed.`)
+		}
+
+		return data
+	},
+
+	async updateListing(id, fields) {
+		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
+			throw new APIError(400, `Fields can't be blank.`)
+		}
+
+		const data = await repo.updateListing(id, fields)
+
+		if (!data) {
+			throw new APIError(500, 'Update listing failed.')
+		}
+
+		return data
+	},
 }
