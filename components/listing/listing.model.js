@@ -51,12 +51,11 @@ listingSchema.statics.updateListing = async (id, fields) => {
 listingSchema.post('save', async function (doc, next) {
 	const User = mongoose.model('User')
 	const listing = doc
-	const user = await User.findByIdAndUpdate(
+	await User.findByIdAndUpdate(
 		listing.postedBy,
 		{ $push: { listings: listing._id } },
 		{ new: true }
 	)
-	await user.save()
 
 	next()
 })
@@ -65,12 +64,11 @@ listingSchema.post('save', async function (doc, next) {
 listingSchema.post('remove', async function (doc, next) {
 	const User = mongoose.model('User')
 	const listing = doc
-	const user = await User.findByIdAndUpdate(
+	await User.findByIdAndUpdate(
 		listing.postedBy,
 		{ $pull: { listings: listing._id } },
 		{ new: true }
 	)
-	await user.save()
 
 	next()
 })

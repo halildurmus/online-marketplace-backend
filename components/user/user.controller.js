@@ -3,6 +3,16 @@ const Service = require('./user.service')
 const repo = new Service()
 
 module.exports = {
+	async favoriteListing(userId, listingId) {
+		const data = await repo.favoriteListing(userId, listingId)
+
+		if (!data) {
+			throw new APIError(500, 'Favorite listing failed.')
+		}
+
+		return data
+	},
+
 	async getUserListings(userId) {
 		const data = await repo.getUserListings(userId)
 
@@ -66,6 +76,16 @@ module.exports = {
 
 		if (!data) {
 			throw new APIError(500, `Registration failed.`)
+		}
+
+		return data
+	},
+
+	async unfavoriteListing(userId, listingId) {
+		const data = await repo.unfavoriteListing(userId, listingId)
+
+		if (!data) {
+			throw new APIError(500, 'Unfavorite listing failed.')
 		}
 
 		return data

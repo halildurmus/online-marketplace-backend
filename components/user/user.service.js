@@ -10,6 +10,22 @@ class UserService {
 		}
 	}
 
+	async favoriteListing(userId, listingId) {
+		return await this.User.findByIdAndUpdate(
+			userId,
+			{ $push: { favorites: listingId } },
+			{ new: true }
+		)
+	}
+
+	async unfavoriteListing(userId, listingId) {
+		return await this.User.findByIdAndUpdate(
+			userId,
+			{ $pull: { favorites: listingId } },
+			{ new: true }
+		)
+	}
+
 	async getUserListings(userId) {
 		return await this.User.getListingsByUser(userId)
 	}

@@ -1,14 +1,16 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync } = require('../../middlewares')
-const { isValidOperation } = require('./user.util')
+const { isValidListingId, isValidOperation } = require('./user.util')
 const {
+	favoriteListing,
 	getUserListings,
 	getUserProfile,
 	login,
 	logout,
 	logoutAll,
 	createUser,
+	unfavoriteListing,
 	updateUser,
 } = require('./user.controller')
 
@@ -43,6 +45,23 @@ router.post(
 	'/auth/register',
 	catchAsync(async (req, res) => {
 		res.status(201).json(await createUser(req.body))
+	})
+)
+
+router.post(
+	'/favorites',
+	auth,
+	isValidListingId,
+	catchAsync(async (req, res) => {
+		res.json(await favoriteListing(req.user.id, req.body.id))
+	})
+)
+
+router.delete(
+	'/favorites/:id',
+	auth,
+	catchAsync(async (req, res) => {
+		res.json(await unfavoriteListing(req.user.id, req.params.id))
 	})
 )
 
