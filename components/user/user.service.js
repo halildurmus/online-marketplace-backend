@@ -10,6 +10,10 @@ class UserService {
 		}
 	}
 
+	async getUserListings(userId) {
+		return await this.User.getListingsByUser(userId)
+	}
+
 	async getUserProfile(userId) {
 		return await this.User.getUserProfile(userId)
 	}

@@ -61,6 +61,7 @@ listingSchema.post('save', async function (doc, next) {
 	next()
 })
 
+// Remove listing's reference from the user who posted it.
 listingSchema.post('remove', async function (doc, next) {
 	const User = mongoose.model('User')
 	const listing = doc

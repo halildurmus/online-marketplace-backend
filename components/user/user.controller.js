@@ -3,6 +3,16 @@ const Service = require('./user.service')
 const repo = new Service()
 
 module.exports = {
+	async getUserListings(userId) {
+		const data = await repo.getUserListings(userId)
+
+		if (!data) {
+			throw new APIError(500, `Get user listings failed.`)
+		}
+
+		return data
+	},
+
 	async getUserProfile(userId) {
 		const data = await repo.getUserProfile(userId)
 

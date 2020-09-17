@@ -3,6 +3,7 @@ const router = express.Router()
 const { auth, catchAsync } = require('../../middlewares')
 const { isValidOperation } = require('./user.util')
 const {
+	getUserListings,
 	getUserProfile,
 	login,
 	logout,
@@ -76,6 +77,22 @@ router.patch(
 	isValidOperation,
 	catchAsync(async (req, res) => {
 		res.json(await updateUser(req.params.id, req.body))
+	})
+)
+
+router.get(
+	'/users/me/listings',
+	auth,
+	catchAsync(async (req, res) => {
+		res.json(await getUserListings(req.user.id))
+	})
+)
+
+router.get(
+	'/users/:id/listings',
+	auth,
+	catchAsync(async (req, res) => {
+		res.json(await getUserListings(req.params.id))
 	})
 )
 
