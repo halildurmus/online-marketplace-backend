@@ -1,5 +1,5 @@
 const { APIError } = require('../../helpers')
-const catchAsync = require('../../middlewares/catchAsync')
+const { catchAsync } = require('../../middlewares')
 const mongoose = require('mongoose')
 
 module.exports.isValidListingId = catchAsync(async (req, res, next) => {

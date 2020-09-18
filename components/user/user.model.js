@@ -94,23 +94,22 @@ userSchema.statics.findByCredentials = async (email, password) => {
 	return user
 }
 
-userSchema.statics.getListingsByUser = async (id) => {
-	return (await User.findById(id).select('listings').populate('listings'))
-		.listings
+userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
+	const user = await User.findById(userId)
+	const favoritedListings = user.favorites
+
+	return favoritedListings.includes(listingId)
 }
 
-userSchema.statics.getUserProfile = async (id) => {
-	return await User.findById(id).select(
-		'-email -password -tokens -createdAt -updatedAt'
-	)
-}
-
-// Hash the plain text password before saving
+// Hash the plain text password before saving.
 userSchema.pre('save', async function (next) {
 	const user = this
 
-	if (user.isModified('firstName') && user.isModified('lastName')) {
+	if (user.isModified('firstName')) {
 		user.firstName = capitalizeEachWord(user.firstName)
+	}
+
+	if (user.isModified('lastName')) {
 		user.lastName = capitalizeEachWord(user.lastName)
 	}
 

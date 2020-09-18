@@ -40,22 +40,25 @@ const listingSchema = new Schema(
 	}
 )
 
-listingSchema.statics.updateListing = async (id, fields) => {
-	return await Listing.findByIdAndUpdate(id, fields, {
-		new: true,
-		runValidators: true,
-	})
+// Increment or decrement listing's favorites count depending on the count parameter.
+listingSchema.statics.updateFavoritesCount = async function (listingId, count) {
+	const listing = await Listing.findById(listingId)
+	listing.favorites += count
+
+	return await listing.save()
 }
 
 // Save listing's reference to the user who posted it.
-listingSchema.post('save', async function (doc, next) {
-	const User = mongoose.model('User')
-	const listing = doc
-	await User.findByIdAndUpdate(
-		listing.postedBy,
-		{ $push: { listings: listing._id } },
-		{ new: true }
-	)
+listingSchema.pre('save', async function (next) {
+	const listing = this
+	if (listing.isNew) {
+		const User = mongoose.model('User')
+		await User.findByIdAndUpdate(
+			listing.postedBy,
+			{ $push: { listings: listing._id } },
+			{ new: true }
+		)
+	}
 
 	next()
 })

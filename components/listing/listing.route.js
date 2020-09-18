@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const { auth, catchAsync } = require('../../middlewares')
-const { isValidOperation } = require('./listing.util')
+const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
+const { isValidOperation } = require('./listing.middleware')
 const {
 	createListing,
 	getListing,
@@ -29,6 +29,7 @@ router.get(
 router.post(
 	'/listings',
 	auth,
+	isRequestBodyBlank,
 	catchAsync(async (req, res) => {
 		res.status(201).json(await createListing(req.user, req.body))
 	})
@@ -37,6 +38,7 @@ router.post(
 router.patch(
 	'/listings/:id',
 	auth,
+	isRequestBodyBlank,
 	isValidOperation,
 	catchAsync(async (req, res) => {
 		res.json(await updateListing(req.params.id, req.body))

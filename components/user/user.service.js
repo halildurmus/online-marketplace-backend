@@ -11,27 +11,39 @@ class UserService {
 	}
 
 	async favoriteListing(userId, listingId) {
-		return await this.User.findByIdAndUpdate(
+		if (await this.User.isFavoritedBefore(userId, listingId)) {
+			return
+		}
+
+		await this.User.findByIdAndUpdate(
 			userId,
 			{ $push: { favorites: listingId } },
 			{ new: true }
 		)
+
+		return await db.Listing.updateFavoritesCount(listingId, 1)
 	}
 
 	async unfavoriteListing(userId, listingId) {
-		return await this.User.findByIdAndUpdate(
+		await this.User.findByIdAndUpdate(
 			userId,
 			{ $pull: { favorites: listingId } },
 			{ new: true }
 		)
+
+		return await db.Listing.updateFavoritesCount(listingId, -1)
 	}
 
 	async getUserListings(userId) {
-		return await this.User.getListingsByUser(userId)
+		return (
+			await this.User.findById(userId).select('listings').populate('listings')
+		).listings
 	}
 
 	async getUserProfile(userId) {
-		return await this.User.getUserProfile(userId)
+		return await this.User.findById(userId).select(
+			'-email -password -tokens -createdAt -updatedAt'
+		)
 	}
 
 	async login(params) {
@@ -62,10 +74,10 @@ class UserService {
 		return { user: user.toJSON(), token }
 	}
 
-	async updateUser(userId, params) {
+	async updateUser(userId, fields) {
 		const user = await this.User.findById(userId)
-		const updates = Object.keys(params)
-		updates.forEach((update) => (user[update] = params[update]))
+		const updates = Object.keys(fields)
+		updates.forEach((update) => (user[update] = fields[update]))
 
 		return await user.save()
 	}

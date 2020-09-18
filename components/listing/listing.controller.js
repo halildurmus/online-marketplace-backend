@@ -17,7 +17,7 @@ module.exports = {
 		const data = await repo.getListing(id)
 
 		if (!data) {
-			throw new APIError(500, `Get listing failed.`)
+			throw new APIError(404, `Listing not found.`)
 		}
 
 		return data
@@ -28,6 +28,10 @@ module.exports = {
 
 		if (!data) {
 			throw new APIError(500, `Get all listings failed.`)
+		}
+
+		if (data.length === 0) {
+			throw new APIError(404, `Listings not found.`)
 		}
 
 		return data
@@ -44,10 +48,6 @@ module.exports = {
 	},
 
 	async updateListing(id, fields) {
-		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
-			throw new APIError(400, `Fields can't be blank.`)
-		}
-
 		const data = await repo.updateListing(id, fields)
 
 		if (!data) {

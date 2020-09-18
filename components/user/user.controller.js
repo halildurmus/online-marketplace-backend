@@ -7,7 +7,7 @@ module.exports = {
 		const data = await repo.favoriteListing(userId, listingId)
 
 		if (!data) {
-			throw new APIError(500, 'Favorite listing failed.')
+			throw new APIError(400, 'You can only favorite a listing once.')
 		}
 
 		return data
@@ -34,10 +34,6 @@ module.exports = {
 	},
 
 	async login(fields) {
-		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
-			throw new APIError(400, `Fields can't be blank.`)
-		}
-
 		const data = await repo.login(fields)
 
 		if (!data) {
@@ -68,10 +64,6 @@ module.exports = {
 	},
 
 	async createUser(fields) {
-		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
-			throw new APIError(400, `Fields can't be blank.`)
-		}
-
 		const data = await repo.createUser(fields)
 
 		if (!data) {
@@ -92,10 +84,6 @@ module.exports = {
 	},
 
 	async updateUser(userId, fields) {
-		if (Object.keys(fields).length === 0 && fields.constructor === Object) {
-			throw new APIError(400, `Fields can't be blank.`)
-		}
-
 		const data = await repo.updateUser(userId, fields)
 
 		if (!data) {

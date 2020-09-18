@@ -1,5 +1,5 @@
 const { APIError } = require('../../helpers')
-const catchAsync = require('../../middlewares/catchAsync')
+const { catchAsync } = require('../../middlewares')
 
 module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 	const updates = Object.keys(req.body)

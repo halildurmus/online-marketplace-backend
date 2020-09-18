@@ -1,6 +1,5 @@
 const db = require('../../db')
 const Listing = db.Listing
-const Types = db.Types
 
 class ListingService {
 	constructor(db, collectionName) {
@@ -20,10 +19,6 @@ class ListingService {
 	}
 
 	async getListing(id) {
-		if (!Types.ObjectId.isValid(id)) {
-			return
-		}
-
 		const listing = await this.Listing.findById(id)
 
 		if (!listing) {
@@ -46,11 +41,18 @@ class ListingService {
 	async removeListing(id) {
 		const listing = await this.Listing.findById(id)
 
+		if (!listing) {
+			return
+		}
+
 		return await listing.remove()
 	}
 
 	async updateListing(id, fields) {
-		return await this.Listing.updateListing(id, fields)
+		return await this.Listing.findByIdAndUpdate(id, fields, {
+			new: true,
+			runValidators: true,
+		})
 	}
 }
 
