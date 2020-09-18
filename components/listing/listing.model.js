@@ -76,6 +76,18 @@ listingSchema.post('remove', async function (doc, next) {
 	next()
 })
 
+// Remove listing's reference from the users who favorited it.
+listingSchema.post('remove', async function (doc, next) {
+	const listing = doc
+
+	if (listing.favorites > 0) {
+		const User = mongoose.model('User')
+		await User.updateMany({ $pull: { favorites: listing._id } })
+	}
+
+	next()
+})
+
 const Listing = mongoose.model('Listing', listingSchema)
 
 module.exports = Listing
