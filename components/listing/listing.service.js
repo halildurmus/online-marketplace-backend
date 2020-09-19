@@ -29,7 +29,7 @@ class ListingService {
 	}
 
 	async getAllListings() {
-		const listing = await this.Listing.find({})
+		const listing = await this.Listing.find({}).populate('subcategory')
 
 		if (!listing) {
 			return

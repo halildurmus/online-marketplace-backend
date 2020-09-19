@@ -18,10 +18,9 @@ const listingSchema = new Schema(
 			maxLength: 1000,
 			trim: true,
 		},
-		category: { type: mongoose.Types.ObjectId, required: false },
-		subCategory: { type: mongoose.Types.ObjectId, required: false },
+		category: { type: String, required: true },
 		price: { type: Number, required: true, min: 0, trim: true },
-		currencyCode: { type: String, required: true, length: 3, trim: true },
+		currency: { type: String, required: true, length: 3, trim: true },
 		photos: [{ photo: { type: String, required: false } }],
 		videos: [{ video: { type: String } }],
 		condition: { type: String },
@@ -40,7 +39,8 @@ const listingSchema = new Schema(
 	}
 )
 
-// Increment or decrement listing's favorites count depending on the count parameter.
+// Increments or decrements listing's favorites count depending on the count
+// parameter.
 listingSchema.statics.updateFavoritesCount = async function (listingId, count) {
 	const listing = await Listing.findById(listingId)
 	listing.favorites += count
@@ -51,6 +51,12 @@ listingSchema.statics.updateFavoritesCount = async function (listingId, count) {
 // Save listing's reference to the user who posted it.
 listingSchema.pre('save', async function (next) {
 	const listing = this
+
+	// Runs only when the document was first created. Because of we use .save()
+	// method for updating the favorites count, this hook gets triggered every
+	// time someone favorites a listing. By doing that check, we avoid the
+	// situation that every time someone favorited the listing, it constantly adds
+	// listing's reference to the user who posted it.
 	if (listing.isNew) {
 		const User = mongoose.model('User')
 		await User.findByIdAndUpdate(
