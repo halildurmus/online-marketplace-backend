@@ -10,6 +10,14 @@ class UserService {
 		}
 	}
 
+	async createUser(fields) {
+		const user = new this.User(fields)
+		await user.save()
+		const token = await user.generateAuthToken()
+
+		return { user: user.toJSON(), token }
+	}
+
 	async favoriteListing(userId, listingId) {
 		if (await this.User.isFavoritedBefore(userId, listingId)) {
 			return
@@ -24,14 +32,10 @@ class UserService {
 		return await db.Listing.updateFavoritesCount(listingId, 1)
 	}
 
-	async unfavoriteListing(userId, listingId) {
-		await this.User.findByIdAndUpdate(
-			userId,
-			{ $pull: { favorites: listingId } },
-			{ new: true }
-		)
-
-		return await db.Listing.updateFavoritesCount(listingId, -1)
+	async getUserFavorites(userId) {
+		return (
+			await this.User.findById(userId).select('favorites').populate('favorites')
+		).favorites
 	}
 
 	async getUserListings(userId) {
@@ -66,12 +70,14 @@ class UserService {
 		return await user.save()
 	}
 
-	async createUser(fields) {
-		const user = new this.User(fields)
-		await user.save()
-		const token = await user.generateAuthToken()
+	async unfavoriteListing(userId, listingId) {
+		await this.User.findByIdAndUpdate(
+			userId,
+			{ $pull: { favorites: listingId } },
+			{ new: true }
+		)
 
-		return { user: user.toJSON(), token }
+		return await db.Listing.updateFavoritesCount(listingId, -1)
 	}
 
 	async updateUser(userId, fields) {

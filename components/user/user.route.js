@@ -3,13 +3,14 @@ const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { isValidListingId, isValidOperation } = require('./user.middleware')
 const {
+	createUser,
 	favoriteListing,
+	getUserFavorites,
 	getUserListings,
 	getUserProfile,
 	login,
 	logout,
 	logoutAll,
-	createUser,
 	unfavoriteListing,
 	updateUser,
 } = require('./user.controller')
@@ -100,6 +101,22 @@ router.patch(
 	isValidOperation,
 	catchAsync(async (req, res) => {
 		res.json(await updateUser(req.params.id, req.body))
+	})
+)
+
+router.get(
+	'/users/me/favorites',
+	auth,
+	catchAsync(async (req, res) => {
+		res.json(await getUserFavorites(req.user.id))
+	})
+)
+
+router.get(
+	'/users/:id/favorites',
+	auth,
+	catchAsync(async (req, res) => {
+		res.json(await getUserFavorites(req.params.id))
 	})
 )
 
