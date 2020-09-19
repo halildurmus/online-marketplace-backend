@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
-const { isValidOperation } = require('./listing.middleware')
+const { isValidListingId, isValidOperation } = require('./listing.middleware')
 const {
 	createListing,
 	getListing,
@@ -48,6 +48,7 @@ router.patch(
 router.delete(
 	'/listings/:id',
 	auth,
+	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await removeListing(req.params.id))
 	})

@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
-const { isValidListingId, isValidOperation } = require('./user.middleware')
+const { isValidListingId } = require('../listing/listing.middleware')
+const { isValidOperation, isValidUserId } = require('./user.middleware')
 const {
 	createUser,
 	favoriteListing,
@@ -63,6 +64,7 @@ router.post(
 router.delete(
 	'/favorites/:id',
 	auth,
+	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await unfavoriteListing(req.user.id, req.params.id))
 	})
@@ -89,6 +91,7 @@ router.patch(
 router.get(
 	'/users/:id',
 	auth,
+	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserProfile(req.params.id))
 	})
@@ -97,6 +100,7 @@ router.get(
 router.patch(
 	'/users/:id',
 	auth,
+	isValidUserId,
 	isRequestBodyBlank,
 	isValidOperation,
 	catchAsync(async (req, res) => {
@@ -115,6 +119,7 @@ router.get(
 router.get(
 	'/users/:id/favorites',
 	auth,
+	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserFavorites(req.params.id))
 	})
@@ -131,6 +136,7 @@ router.get(
 router.get(
 	'/users/:id/listings',
 	auth,
+	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserListings(req.params.id))
 	})
