@@ -39,15 +39,6 @@ const listingSchema = new Schema(
 	}
 )
 
-// Increments or decrements listing's favorites count depending on the count
-// parameter.
-listingSchema.statics.updateFavoritesCount = async function (listingId, count) {
-	const listing = await Listing.findById(listingId)
-	listing.favorites += count
-
-	return await listing.save()
-}
-
 // Save listing's reference to the user who posted it.
 listingSchema.pre('save', async function (next) {
 	const listing = this

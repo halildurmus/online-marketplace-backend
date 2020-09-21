@@ -14,6 +14,7 @@ module.exports = {
 	},
 
 	async getListing(id) {
+		await repo.updateViewsCounter(id)
 		const data = await repo.getListing(id)
 
 		if (!data) {

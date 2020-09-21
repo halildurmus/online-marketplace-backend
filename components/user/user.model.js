@@ -46,7 +46,7 @@ const userSchema = new Schema(
 			},
 		},
 		bio: { type: String, trim: true, maxLength: 150, default: '' },
-		favorites: [{ type: mongoose.Types.ObjectId, ref: 'Listing' }],
+		favorites: { type: Map, of: String, default: {} },
 		listings: [{ type: mongoose.Types.ObjectId, ref: 'Listing' }],
 		tokens: [{ token: { type: String, required: true } }],
 	},
@@ -96,9 +96,8 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
 	const user = await User.findById(userId)
-	const favoritedListings = user.favorites
 
-	return favoritedListings.includes(listingId)
+	return user.favorites.get(listingId) === 'true'
 }
 
 // Hash the plain text password before saving.

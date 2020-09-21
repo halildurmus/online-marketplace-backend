@@ -14,6 +14,7 @@ module.exports = {
 	},
 
 	async favoriteListing(userId, listingId) {
+		await repo.updateFavoritesCounter(listingId, 1)
 		const data = await repo.favoriteListing(userId, listingId)
 
 		if (!data) {
@@ -84,6 +85,7 @@ module.exports = {
 	},
 
 	async unfavoriteListing(userId, listingId) {
+		await repo.updateFavoritesCounter(listingId, -1)
 		const data = await repo.unfavoriteListing(userId, listingId)
 
 		if (!data) {

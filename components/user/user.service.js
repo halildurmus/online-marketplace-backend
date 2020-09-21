@@ -1,11 +1,15 @@
-const db = require('../../db')
-const User = db.User
+const { date } = require('../../utils')
+const { mongodb, redis } = require('../../db')
+const Listing = mongodb.Listing
+const User = mongodb.User
 
 class UserService {
 	constructor(db, collectionName) {
 		if (!db || !collectionName) {
+			this.Listing = Listing
 			this.User = User
 		} else {
+			this.Listing = db.collection('Listing')
 			this.User = db.collection(collectionName)
 		}
 	}
@@ -23,31 +27,30 @@ class UserService {
 			return
 		}
 
-		await this.User.findByIdAndUpdate(
-			userId,
-			{ $push: { favorites: listingId } },
-			{ new: true }
-		)
-
-		return await db.Listing.updateFavoritesCount(listingId, 1)
+		const user = await this.User.findById(userId)
+		user.favorites.set(listingId, true)
+		return await user.save()
 	}
 
 	async getUserFavorites(userId) {
-		return (
-			await this.User.findById(userId).select('favorites').populate('favorites')
-		).favorites
+		const user = await this.User.findById(userId)
+		const favoriteIds = []
+
+		for (const key of user.favorites.keys()) {
+			favoriteIds.push(key)
+		}
+
+		return await this.Listing.find({ _id: { $in: favoriteIds } })
 	}
 
 	async getUserListings(userId) {
-		return (
-			await this.User.findById(userId).select('listings').populate('listings')
-		).listings
+		const listingIds = (await this.User.findById(userId)).listings
+
+		return await this.Listing.find({ _id: { $in: listingIds } })
 	}
 
 	async getUserProfile(userId) {
-		return await this.User.findById(userId).select(
-			'-email -password -tokens -createdAt -updatedAt'
-		)
+		return this.User.findById(userId)
 	}
 
 	async login(params) {
@@ -71,13 +74,15 @@ class UserService {
 	}
 
 	async unfavoriteListing(userId, listingId) {
-		await this.User.findByIdAndUpdate(
-			userId,
-			{ $pull: { favorites: listingId } },
-			{ new: true }
-		)
+		const key = `favorites.${listingId}`
+		const mod = { $unset: {} }
+		mod.$unset[key] = 1
 
-		return await db.Listing.updateFavoritesCount(listingId, -1)
+		return await this.User.updateOne({ _id: userId }, mod)
+	}
+
+	async updateFavoritesCounter(id, count) {
+		return redis.hincrby(`favorites_${date.getDate()}`, id, count)
 	}
 
 	async updateUser(userId, fields) {

@@ -1,5 +1,7 @@
-const db = require('../../db')
-const Listing = db.Listing
+const { date } = require('../../utils')
+const { mongodb } = require('../../db')
+const Listing = mongodb.Listing
+const redis = require('../../db/redis')
 
 class ListingService {
 	constructor(db, collectionName) {
@@ -25,6 +27,8 @@ class ListingService {
 			return
 		}
 
+		listing.views += 1
+
 		return listing.toJSON()
 	}
 
@@ -49,10 +53,14 @@ class ListingService {
 	}
 
 	async updateListing(id, fields) {
-		return await this.Listing.findByIdAndUpdate(id, fields, {
+		return this.Listing.findByIdAndUpdate(id, fields, {
 			new: true,
 			runValidators: true,
 		})
+	}
+
+	async updateViewsCounter(id) {
+		return redis.hincrby(`views_${date.getDate()}`, id, 1)
 	}
 }
 
