@@ -2,7 +2,7 @@ const { APIError } = require('../helpers')
 const catchAsync = require('./catchAsync')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require('../config')
-const { parseAuthToken } = require('../utils').text
+const { text } = require('../utils')
 const User = require('../components/user/user.model')
 
 module.exports = catchAsync(async (req, res, next) => {
@@ -12,7 +12,7 @@ module.exports = catchAsync(async (req, res, next) => {
 		throw new APIError(400, 'Authorization token not found.')
 	}
 
-	token = parseAuthToken(token)
+	token = text.parseAuthToken(token)
 
 	if (!token) {
 		throw new APIError(400, 'Invalid authorization header type.')
@@ -29,3 +29,14 @@ module.exports = catchAsync(async (req, res, next) => {
 	req.user = user
 	next()
 })
+
+module.exports.restrictTo = (...roles) => (req, res, next) => {
+	if (!roles.includes(req.user.role)) {
+		throw new APIError(
+			403,
+			'You do not have permission to perform this action.'
+		)
+	}
+
+	next()
+}

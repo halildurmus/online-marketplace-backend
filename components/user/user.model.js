@@ -19,6 +19,11 @@ const userSchema = new Schema(
 			lowercase: true,
 			validate: { validator: isEmail, msg: 'Invalid email address.' },
 		},
+		role: {
+			type: String,
+			enum: ['admin', 'user'],
+			default: 'user',
+		},
 		password: {
 			type: String,
 			required: true,
@@ -60,6 +65,7 @@ const userSchema = new Schema(
 				delete ret.createdAt
 				delete ret.hash
 				delete ret.password
+				delete ret.role
 				delete ret.tokens
 				delete ret.updatedAt
 			},

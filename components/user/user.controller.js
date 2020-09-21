@@ -14,12 +14,13 @@ module.exports = {
 	},
 
 	async favoriteListing(userId, listingId) {
-		await repo.updateFavoritesCounter(listingId, 1)
 		const data = await repo.favoriteListing(userId, listingId)
 
 		if (!data) {
 			throw new APIError(400, 'You can only favorite a listing once.')
 		}
+
+		await repo.updateFavoritesCounter(listingId, 1)
 
 		return data
 	},
@@ -85,12 +86,16 @@ module.exports = {
 	},
 
 	async unfavoriteListing(userId, listingId) {
-		await repo.updateFavoritesCounter(listingId, -1)
 		const data = await repo.unfavoriteListing(userId, listingId)
 
 		if (!data) {
-			throw new APIError(500, 'Unfavorite listing failed.')
+			throw new APIError(
+				400,
+				'You cannot unfavorite a listing that you have never favorited before.'
+			)
 		}
+
+		await repo.updateFavoritesCounter(listingId, -1)
 
 		return data
 	},

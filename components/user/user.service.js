@@ -74,6 +74,10 @@ class UserService {
 	}
 
 	async unfavoriteListing(userId, listingId) {
+		if (!(await this.User.isFavoritedBefore(userId, listingId))) {
+			return
+		}
+
 		const key = `favorites.${listingId}`
 		const mod = { $unset: {} }
 		mod.$unset[key] = 1
