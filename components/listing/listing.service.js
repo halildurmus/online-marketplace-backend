@@ -12,12 +12,12 @@ class ListingService {
 		}
 	}
 
-	async createListing(user, fields) {
-		const listing = new this.Listing(fields)
+	async createListing(user, params) {
+		const listing = new this.Listing(params)
 		listing.postedBy = user.id
 		await listing.save()
 
-		return listing.toJSON()
+		return listing
 	}
 
 	async getListing(id) {
@@ -29,17 +29,20 @@ class ListingService {
 
 		listing.views += 1
 
-		return listing.toJSON()
+		return listing
 	}
 
-	async getAllListings() {
-		const listing = await this.Listing.find({}).populate('subcategory')
+	async getListings(match, sort, limit, skip) {
+		const listings = await this.Listing.find(match)
+			.limit(parseInt(limit))
+			.skip(parseInt(skip))
+			.sort(sort)
 
-		if (!listing) {
+		if (!listings) {
 			return
 		}
 
-		return listing
+		return listings
 	}
 
 	async removeListing(id) {
@@ -52,11 +55,12 @@ class ListingService {
 		return await listing.remove()
 	}
 
-	async updateListing(id, fields) {
-		return this.Listing.findByIdAndUpdate(id, fields, {
-			new: true,
-			runValidators: true,
-		})
+	async updateListing(id, params) {
+		const listing = await this.Listing.findById(id)
+		const updates = Object.keys(params)
+		updates.forEach((update) => (listing[update] = params[update]))
+
+		return await listing.save()
 	}
 
 	async updateViewsCounter(id) {

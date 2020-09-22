@@ -23,7 +23,10 @@ const listingSchema = new Schema(
 		currency: { type: String, required: true, length: 3, trim: true },
 		photos: [{ photo: { type: String, required: false } }],
 		videos: [{ video: { type: String } }],
-		condition: { type: String },
+		condition: {
+			type: String,
+			enum: ['new', 'like new', 'good', 'fair', 'poor'],
+		},
 		favorites: { type: Number, min: 0, default: 0 },
 		views: { type: Number, min: 0, default: 0 },
 	},

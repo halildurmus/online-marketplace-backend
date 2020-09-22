@@ -3,8 +3,8 @@ const Service = require('./listing.service')
 const repo = new Service()
 
 module.exports = {
-	async createListing(user, fields) {
-		const data = await repo.createListing(user, fields)
+	async createListing(user, params) {
+		const data = await repo.createListing(user, params)
 
 		if (!data) {
 			throw new APIError(500, `Create listing failed.`)
@@ -14,18 +14,40 @@ module.exports = {
 	},
 
 	async getListing(id) {
-		await repo.updateViewsCounter(id)
 		const data = await repo.getListing(id)
 
 		if (!data) {
-			throw new APIError(404, `Listing not found.`)
+			throw new APIError(500, `Get listing failed.`)
 		}
+
+		await repo.updateViewsCounter(id)
 
 		return data
 	},
 
-	async getAllListings() {
-		const data = await repo.getAllListings()
+	async getListings(params) {
+		const match = {}
+		const sort = {}
+		const limit = params.limit || 0
+		const skip = params.skip || 0
+
+		if (params.category) {
+			match.category = params.category
+		}
+
+		if (params.condition) {
+			match.condition = params.condition.toLowerCase()
+		}
+
+		if (params.sortBy) {
+			sort[params.sortBy] = params.orderBy
+				? params.orderBy === 'desc'
+					? -1
+					: 1
+				: 1
+		}
+
+		const data = await repo.getListings(match, sort, limit, skip)
 
 		if (!data) {
 			throw new APIError(500, `Get all listings failed.`)
@@ -48,8 +70,8 @@ module.exports = {
 		return data
 	},
 
-	async updateListing(id, fields) {
-		const data = await repo.updateListing(id, fields)
+	async updateListing(id, params) {
+		const data = await repo.updateListing(id, params)
 
 		if (!data) {
 			throw new APIError(500, 'Update listing failed.')

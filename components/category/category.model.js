@@ -21,7 +21,7 @@ const categorySchema = new Schema(
 	}
 )
 
-categorySchema.pre('save', async function (next) {
+categorySchema.pre('save', function () {
 	const category = this
 
 	if (category.parent === '/') {
@@ -30,8 +30,6 @@ categorySchema.pre('save', async function (next) {
 		category.category = `/${category.parent.toLowerCase()}/${category.name.toLowerCase()}`
 		category.parent = `/${category.parent.toLowerCase()}`
 	}
-
-	next()
 })
 
 const Category = mongoose.model('Category', categorySchema)

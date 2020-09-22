@@ -14,12 +14,12 @@ class UserService {
 		}
 	}
 
-	async createUser(fields) {
-		const user = new this.User(fields)
+	async createUser(params) {
+		const user = new this.User(params)
 		await user.save()
 		const token = await user.generateAuthToken()
 
-		return { user: user.toJSON(), token }
+		return { user, token }
 	}
 
 	async favoriteListing(userId, listingId) {
@@ -61,7 +61,7 @@ class UserService {
 		)
 		const token = await user.generateAuthToken()
 
-		return { user: user.toJSON(), token }
+		return { user, token }
 	}
 
 	async logout(user, accessToken) {
@@ -100,10 +100,10 @@ class UserService {
 		return redis.hincrby(`favorites_${date.getDate()}`, id, count)
 	}
 
-	async updateUser(userId, fields) {
+	async updateUser(userId, params) {
 		const user = await this.User.findById(userId)
-		const updates = Object.keys(fields)
-		updates.forEach((update) => (user[update] = fields[update]))
+		const updates = Object.keys(params)
+		updates.forEach((update) => (user[update] = params[update]))
 
 		return await user.save()
 	}

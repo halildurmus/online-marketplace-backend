@@ -6,7 +6,7 @@ const { isValidListingId, isValidOperation } = require('./listing.middleware')
 const {
 	createListing,
 	getListing,
-	getAllListings,
+	getListings,
 	removeListing,
 	updateListing,
 } = require('./listing.controller')
@@ -15,13 +15,14 @@ router.get(
 	'/listings',
 	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
-		res.json(await getAllListings())
+		res.json(await getListings(req.query))
 	})
 )
 
 router.get(
 	'/listings/:id',
 	allowIfLoggedIn,
+	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await getListing(req.params.id))
 	})

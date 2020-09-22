@@ -3,8 +3,8 @@ const Service = require('./user.service')
 const repo = new Service()
 
 module.exports = {
-	async createUser(fields) {
-		const data = await repo.createUser(fields)
+	async createUser(params) {
+		const data = await repo.createUser(params)
 
 		if (!data) {
 			throw new APIError(500, `Registration failed.`)
@@ -55,8 +55,8 @@ module.exports = {
 		return data
 	},
 
-	async login(fields) {
-		const data = await repo.login(fields)
+	async login(params) {
+		const data = await repo.login(params)
 
 		if (!data) {
 			throw new APIError(500, `Login failed.`)
@@ -110,8 +110,8 @@ module.exports = {
 		return data
 	},
 
-	async updateUser(userId, fields) {
-		const data = await repo.updateUser(userId, fields)
+	async updateUser(userId, params) {
+		const data = await repo.updateUser(userId, params)
 
 		if (!data) {
 			throw new APIError(500, 'Update user failed.')

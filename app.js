@@ -4,6 +4,7 @@ const corsOptions = { optionsSuccessStatus: 200 }
 const { error } = require('./middlewares')
 const express = require('express')
 const app = express()
+const categoryRouter = require('./components/category/category.route')
 const listingRouter = require('./components/listing/listing.route')
 const userRouter = require('./components/user/user.route')
 
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Routes
+app.use(apiPrefix, categoryRouter)
 app.use(apiPrefix, listingRouter)
 app.use(apiPrefix, userRouter)
 
