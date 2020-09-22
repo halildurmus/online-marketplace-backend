@@ -2,10 +2,10 @@ const { APIError } = require('../helpers')
 const catchAsync = require('./catchAsync')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require('../config')
-const { text } = require('../utils')
+const { roles, text } = require('../utils')
 const User = require('../components/user/user.model')
 
-module.exports = catchAsync(async (req, res, next) => {
+module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 	let token = req.header('Authorization')
 
 	if (!token) {
@@ -30,13 +30,34 @@ module.exports = catchAsync(async (req, res, next) => {
 	next()
 })
 
-module.exports.restrictTo = (...roles) => (req, res, next) => {
-	if (!roles.includes(req.user.role)) {
-		throw new APIError(
-			403,
-			'You do not have permission to perform this action.'
-		)
-	}
+module.exports.grantAccess = function (action, resource) {
+	return catchAsync(async (req, res, next) => {
+		if (req.user.role === 'user' && req.method === ('DELETE' || 'PATCH')) {
+			if (
+				resource === 'listing' &&
+				!req.user.listings.includes(req.params.id)
+			) {
+				throw new APIError(
+					403,
+					'You do not have permission to perform this action.'
+				)
+			} else if (resource === 'profile' && req.user.id !== req.params.id) {
+				throw new APIError(
+					403,
+					'You do not have permission to perform this action.'
+				)
+			}
+		}
 
-	next()
+		const permission = roles.can(req.user.role)[action](resource)
+
+		if (!permission.granted) {
+			throw new APIError(
+				403,
+				'You do not have permission to perform this action.'
+			)
+		}
+
+		next()
+	})
 }

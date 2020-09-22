@@ -25,7 +25,7 @@ module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 
 module.exports.isValidUserId = catchAsync(async (req, res, next) => {
 	const User = mongoose.model('User')
-	const isUserIdValid = await User.findById(req.body.id || req.params.id)
+	const isUserIdValid = await User.findById(req.user.id || req.params.id)
 
 	if (!isUserIdValid) {
 		throw new APIError(404, 'Invalid user id!')

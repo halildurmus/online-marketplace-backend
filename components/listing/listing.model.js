@@ -62,8 +62,8 @@ listingSchema.pre('save', async function (next) {
 
 // Remove listing's reference from the user who posted it.
 listingSchema.post('remove', async function (doc, next) {
-	const User = mongoose.model('User')
 	const listing = doc
+	const User = mongoose.model('User')
 	await User.findByIdAndUpdate(
 		listing.postedBy,
 		{ $pull: { listings: listing._id } },
@@ -78,8 +78,12 @@ listingSchema.post('remove', async function (doc, next) {
 	const listing = doc
 
 	if (listing.favorites > 0) {
+		const key = `favorites.${listing._id}`
+		const mod = { $unset: {} }
+		mod.$unset[key] = 1
+
 		const User = mongoose.model('User')
-		await User.updateMany({ $pull: { favorites: listing._id } })
+		await User.updateMany(mod)
 	}
 
 	next()

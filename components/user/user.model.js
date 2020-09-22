@@ -1,11 +1,11 @@
 const { APIError } = require('../../helpers')
 const bcrypt = require('bcrypt')
 const { capitalizeEachWord } = require('../../utils/text')
+const { isEmail, isURL, matches } = require('validator')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require('../../config')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const { isEmail, isURL, matches } = require('validator')
 
 const userSchema = new Schema(
 	{
@@ -120,6 +120,26 @@ userSchema.pre('save', async function (next) {
 
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8)
+	}
+
+	next()
+})
+
+// Remove user's listing's and references.
+userSchema.post('remove', async function (doc, next) {
+	const listingIds = doc.listings
+
+	if (listingIds.length > 0) {
+		const Listing = mongoose.model('Listing')
+		const User = mongoose.model('User')
+		await Listing.deleteMany({ _id: { $in: listingIds } })
+
+		for (const id of listingIds) {
+			const key = `favorites.${id}`
+			const mod = { $unset: {} }
+			mod.$unset[key] = 1
+			await User.updateOne(mod)
+		}
 	}
 
 	next()

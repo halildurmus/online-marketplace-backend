@@ -44,7 +44,8 @@ class UserService {
 	}
 
 	async getUserListings(userId) {
-		const listingIds = (await this.User.findById(userId)).listings
+		const user = await this.User.findById(userId)
+		const listingIds = user.listings
 
 		return await this.Listing.find({ _id: { $in: listingIds } })
 	}
@@ -71,6 +72,16 @@ class UserService {
 	async logoutAll(user) {
 		user.tokens = []
 		return await user.save()
+	}
+
+	async removeUser(userId) {
+		const user = await this.User.findById(userId)
+
+		if (!user) {
+			return
+		}
+
+		return await user.remove()
 	}
 
 	async unfavoriteListing(userId, listingId) {

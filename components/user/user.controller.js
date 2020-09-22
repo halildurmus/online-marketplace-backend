@@ -85,6 +85,16 @@ module.exports = {
 		return { message: 'Logout all successful.' }
 	},
 
+	async removeUser(userId) {
+		const data = await repo.removeUser(userId)
+
+		if (!data) {
+			throw new APIError(500, `Remove listing failed.`)
+		}
+
+		return data
+	},
+
 	async unfavoriteListing(userId, listingId) {
 		const data = await repo.unfavoriteListing(userId, listingId)
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
+const { allowIfLoggedIn, grantAccess } = auth
 const { isValidListingId } = require('../listing/listing.middleware')
 const { isValidOperation, isValidUserId } = require('./user.middleware')
 const {
@@ -12,6 +13,7 @@ const {
 	login,
 	logout,
 	logoutAll,
+	removeUser,
 	unfavoriteListing,
 	updateUser,
 } = require('./user.controller')
@@ -26,7 +28,7 @@ router.post(
 
 router.post(
 	'/auth/logout',
-	auth,
+	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		req.user.tokens = req.user.tokens.filter((token) => {
 			return token.token !== req.token
@@ -37,7 +39,7 @@ router.post(
 
 router.post(
 	'/auth/logout-all',
-	auth,
+	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		req.user.tokens = []
 		res.json(await logoutAll(req.user))
@@ -54,7 +56,7 @@ router.post(
 
 router.post(
 	'/favorites',
-	auth,
+	allowIfLoggedIn,
 	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await favoriteListing(req.user.id, req.body.id))
@@ -63,8 +65,9 @@ router.post(
 
 router.delete(
 	'/favorites/:id',
-	auth,
+	allowIfLoggedIn,
 	isValidListingId,
+	grantAccess('deleteOwn', 'favorites'),
 	catchAsync(async (req, res) => {
 		res.json(await unfavoriteListing(req.user.id, req.params.id))
 	})
@@ -72,7 +75,7 @@ router.delete(
 
 router.get(
 	'/users/me',
-	auth,
+	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(req.user)
 	})
@@ -80,7 +83,8 @@ router.get(
 
 router.patch(
 	'/users/me',
-	auth,
+	allowIfLoggedIn,
+	grantAccess('updateOwn', 'profile'),
 	isRequestBodyBlank,
 	isValidOperation,
 	catchAsync(async (req, res) => {
@@ -90,7 +94,7 @@ router.patch(
 
 router.get(
 	'/users/:id',
-	auth,
+	allowIfLoggedIn,
 	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserProfile(req.params.id))
@@ -99,8 +103,9 @@ router.get(
 
 router.patch(
 	'/users/:id',
-	auth,
+	allowIfLoggedIn,
 	isValidUserId,
+	grantAccess('updateOwn', 'profile'),
 	isRequestBodyBlank,
 	isValidOperation,
 	catchAsync(async (req, res) => {
@@ -108,9 +113,19 @@ router.patch(
 	})
 )
 
+router.delete(
+	'/users/:id',
+	allowIfLoggedIn,
+	isValidUserId,
+	grantAccess('deleteAny', 'profile'),
+	catchAsync(async (req, res) => {
+		res.json(await removeUser(req.params.id))
+	})
+)
+
 router.get(
 	'/users/me/favorites',
-	auth,
+	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(await getUserFavorites(req.user.id))
 	})
@@ -118,7 +133,7 @@ router.get(
 
 router.get(
 	'/users/:id/favorites',
-	auth,
+	allowIfLoggedIn,
 	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserFavorites(req.params.id))
@@ -127,7 +142,7 @@ router.get(
 
 router.get(
 	'/users/me/listings',
-	auth,
+	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(await getUserListings(req.user.id))
 	})
@@ -135,7 +150,7 @@ router.get(
 
 router.get(
 	'/users/:id/listings',
-	auth,
+	allowIfLoggedIn,
 	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserListings(req.params.id))
