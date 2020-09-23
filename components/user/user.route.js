@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
-const { allowIfLoggedIn, grantAccess } = auth
+const { allowIfLoggedIn, grantAccess, restrictTo } = auth
 const { isValidListingId } = require('../listing/listing.middleware')
 const { isValidOperation, isValidUserId } = require('./user.middleware')
 const {
 	createUser,
 	favoriteListing,
+	getUsers,
 	getUserFavorites,
 	getUserListings,
 	getUserProfile,
@@ -70,6 +71,16 @@ router.delete(
 	grantAccess('deleteOwn', 'favorites'),
 	catchAsync(async (req, res) => {
 		res.json(await unfavoriteListing(req.user.id, req.params.id))
+	})
+)
+
+router.get(
+	'/users',
+	allowIfLoggedIn,
+	isValidUserId,
+	restrictTo('admin'),
+	catchAsync(async (req, res) => {
+		res.json(await getUsers(req.query))
 	})
 )
 

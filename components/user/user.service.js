@@ -32,6 +32,19 @@ class UserService {
 		return await user.save()
 	}
 
+	async getUsers(match, sort, limit, skip) {
+		const users = await this.User.find(match)
+			.limit(parseInt(limit))
+			.skip(parseInt(skip))
+			.sort(sort)
+
+		if (!users) {
+			return
+		}
+
+		return users
+	}
+
 	async getUserFavorites(userId) {
 		const user = await this.User.findById(userId)
 		const favoriteIds = []

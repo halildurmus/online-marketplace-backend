@@ -25,6 +25,41 @@ module.exports = {
 		return data
 	},
 
+	async getUsers(params) {
+		const match = {}
+		const sort = {}
+		const limit = params.limit || 0
+		const skip = params.skip || 0
+
+		if (params.email) {
+			match.email = params.email.toLowerCase()
+		}
+
+		if (params.role) {
+			match.role = params.role.toLowerCase()
+		}
+
+		if (params.sortBy) {
+			sort[params.sortBy] = params.orderBy
+				? params.orderBy === 'desc'
+					? -1
+					: 1
+				: 1
+		}
+
+		const data = await repo.getUsers(match, sort, limit, skip)
+
+		if (!data) {
+			throw new APIError(500, `Get users failed.`)
+		}
+
+		if (data.length === 0) {
+			throw new APIError(404, `Users not found.`)
+		}
+
+		return data
+	},
+
 	async getUserFavorites(userId) {
 		const data = await repo.getUserFavorites(userId)
 
