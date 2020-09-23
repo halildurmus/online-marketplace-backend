@@ -39,6 +39,27 @@ module.exports = {
 			match.condition = params.condition.toLowerCase()
 		}
 
+		if (params.postedWithin) {
+			const day =
+				params.postedWithin === '24h'
+					? 1
+					: params.postedWithin === '7d'
+					? 7
+					: 30
+			const d = new Date()
+			d.setDate(d.getDate() - day)
+
+			match.createdAt = { $gte: d }
+		}
+
+		if (params.priceFrom && params.priceTo) {
+			match.price = { $gte: params.priceFrom, $lte: params.priceTo }
+		} else if (params.priceFrom && !params.priceTo) {
+			match.price = { $gte: params.priceFrom }
+		} else if (params.priceTo && !params.priceFrom) {
+			match.price = { $lte: params.priceTo }
+		}
+
 		if (params.sortBy) {
 			sort[params.sortBy] = params.orderBy
 				? params.orderBy === 'desc'
