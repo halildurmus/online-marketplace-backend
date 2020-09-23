@@ -61,3 +61,16 @@ module.exports.grantAccess = function (action, resource) {
 		next()
 	})
 }
+
+module.exports.restrictTo = function (...roles) {
+	return catchAsync(async (req, res, next) => {
+		if (!roles.includes(req.user.role)) {
+			throw new APIError(
+				403,
+				'You do not have permission to perform this action.'
+			)
+		}
+
+		next()
+	})
+}
