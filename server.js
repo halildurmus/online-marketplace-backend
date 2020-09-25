@@ -1,24 +1,38 @@
+const app = require('./app')
+const http = require('http')
 const logger = require('./utils').loggers.loggerServer
-process.on('uncaughtException', (err) => {
-	logger.error(`${err.name} ${err.message}`)
-	logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
+const mongoose = require('mongoose')
+const port = process.env.PORT || 3000
+const { redis } = require('./db')
+
+const server = http.createServer(app)
+
+server.listen(port)
+
+server.once('listening', () => {
+	const { port } = server.address()
+	logger.info(`Server is listening on port ${port}`)
+})
+
+server.once('error', (err) => {
+	logger.error(`${err}`)
 	process.exit(1)
 })
-const app = require('./app')
-const port = process.env.PORT || 3000
 
-const server = app.listen(port, (err) => {
-	if (err) {
-		logger.error(`${err}`)
-		process.exit(1)
+async function gracefullyShutdown(err) {
+	if (err.name && err.message) {
+		logger.error(`${err.name} ${err.message}`)
 	}
-	logger.info(`Server is up on port ${port}.`)
-})
 
-process.on('unhandledRejection', (err) => {
-	logger.error(`${err.name} ${err.message}`)
-	logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
-	server.close(() => {
-		process.exit(1)
+	logger.error('💥 Shutting down...')
+	server.close(async () => {
+		logger.info('HTTP server closed.')
+		await redis.quit()
+		await mongoose.disconnect()
+		process.exit(0)
 	})
-})
+}
+
+process.on('SIGINT', gracefullyShutdown)
+process.on('SIGTERM', gracefullyShutdown)
+process.on('unhandledRejection', gracefullyShutdown)

@@ -29,6 +29,7 @@ class UserService {
 
 		const user = await this.User.findById(userId)
 		user.favorites.set(listingId, true)
+
 		return await user.save()
 	}
 

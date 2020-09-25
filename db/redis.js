@@ -16,7 +16,7 @@ redis.on('error', (err) => {
 })
 
 redis.on('close', () => {
-	logger.error('Connection to redis closed.')
+	logger.info('Connection to redis closed.')
 })
 
 redis.on('reconnecting', () => {
@@ -25,12 +25,6 @@ redis.on('reconnecting', () => {
 
 redis.on('end', () => {
 	logger.info('Disconnected from redis.')
-})
-
-process.on('SIGINT', () => {
-	redis.quit().then((r) => logger.info(`Redis quit reply: ${r}`))
-	logger.info('Shutdown through app termination.')
-	process.exit(0)
 })
 
 module.exports = redis

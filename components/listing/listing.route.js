@@ -28,6 +28,7 @@ router.get(
 	})
 )
 
+// TODO: Restrict what fields can be set when creating a listing.
 router.post(
 	'/listings',
 	allowIfLoggedIn,

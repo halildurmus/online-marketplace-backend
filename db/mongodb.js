@@ -57,13 +57,6 @@ mongoose.connection.on('close', () => {
 	logger.info('Connection to mongodb closed.')
 })
 
-process.on('SIGINT', () => {
-	mongoose.disconnect().then(() => {
-		logger.info('Shutdown through app termination.')
-		process.exit(0)
-	})
-})
-
 module.exports = connectWithRetry()
 module.exports.Category = require('../components/category/category.model')
 module.exports.Listing = require('../components/listing/listing.model')
