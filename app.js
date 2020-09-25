@@ -17,6 +17,21 @@ app.use(apiPrefix, categoryRouter)
 app.use(apiPrefix, listingRouter)
 app.use(apiPrefix, userRouter)
 
+app.get('/health', async (req, res) => {
+	const healthCheck = {
+		message: 'OK',
+		uptime: process.uptime(),
+		timestamp: Date.now(),
+	}
+
+	try {
+		res.send(healthCheck)
+	} catch (e) {
+		healthCheck.message = e
+		res.status(503).send()
+	}
+})
+
 // If the error is not an instanceOf APIError, convert it.
 // app.use(error.converter)
 // Catch 404 and forward to error handler.
