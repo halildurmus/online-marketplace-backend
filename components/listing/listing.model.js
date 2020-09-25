@@ -27,6 +27,7 @@ const listingSchema = new Schema(
 			type: String,
 			enum: ['new', 'like new', 'good', 'fair', 'poor'],
 		},
+		location: { type: { type: String }, coordinates: [] },
 		favorites: { type: Number, min: 0, default: 0 },
 		views: { type: Number, min: 0, default: 0 },
 	},
@@ -41,6 +42,8 @@ const listingSchema = new Schema(
 		},
 	}
 )
+
+listingSchema.index({ location: '2dsphere' })
 
 // Save listing's reference to the user who posted it.
 listingSchema.pre('save', async function (next) {

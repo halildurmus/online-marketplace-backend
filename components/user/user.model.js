@@ -19,23 +19,19 @@ const userSchema = new Schema(
 			lowercase: true,
 			validate: { validator: isEmail, msg: 'Invalid email address.' },
 		},
-		role: {
-			type: String,
-			enum: ['admin', 'user'],
-			default: 'user',
-		},
 		password: {
 			type: String,
 			required: true,
 			trim: true,
 			validate(value) {
 				const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
+
 				if (!matches(value, pattern)) {
 					throw new Error('')
 				}
 
+				// TODO: Validate using a blacklisted passwords list.
 				if (value.toLowerCase().includes('password')) {
-					// TODO: Validate using a blacklisted passwords list.
 					throw new Error('Password cannot contain "password".')
 				}
 			},
@@ -51,6 +47,12 @@ const userSchema = new Schema(
 			},
 		},
 		bio: { type: String, trim: true, maxLength: 150, default: '' },
+		location: { type: { type: String }, coordinates: [] },
+		role: {
+			type: String,
+			enum: ['admin', 'user'],
+			default: 'user',
+		},
 		favorites: { type: Map, of: String, default: {} },
 		listings: [{ type: mongoose.Types.ObjectId, ref: 'Listing' }],
 		tokens: [{ token: { type: String, required: true } }],
@@ -72,6 +74,8 @@ const userSchema = new Schema(
 		},
 	}
 )
+
+userSchema.index({ location: '2dsphere' })
 
 userSchema.methods.generateAuthToken = async function () {
 	const user = this
