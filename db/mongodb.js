@@ -23,7 +23,7 @@ const connectWithRetry = () => {
 			setTimeout(connectWithRetry, 5000)
 		})
 	} else {
-		logger.info(`Shutting down the app.`)
+		logger.info(`💥 Shutting down...`)
 
 		return process.exit(1)
 	}
@@ -61,4 +61,3 @@ module.exports = connectWithRetry()
 module.exports.Category = require('../components/category/category.model')
 module.exports.Listing = require('../components/listing/listing.model')
 module.exports.User = require('../components/user/user.model')
-module.exports.Types = mongoose.Types
