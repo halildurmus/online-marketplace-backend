@@ -12,7 +12,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Routes
+// Register routes.
 app.use(apiPrefix, categoryRouter)
 app.use(apiPrefix, listingRouter)
 app.use(apiPrefix, userRouter)

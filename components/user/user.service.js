@@ -15,6 +15,7 @@ class UserService {
 	}
 
 	async createUser(params) {
+		// TODO: Save only allowed fields in the collection by filtering params.
 		const user = new this.User(params)
 		await user.save()
 		const token = await user.generateAuthToken()
@@ -111,7 +112,11 @@ class UserService {
 	}
 
 	async updateFavoritesCounter(id, count) {
-		return redis.hincrby(`favorites_${date.getDate()}`, id, count)
+		return redis.hincrby(
+			`favorites_${date.getFormattedDate(new Date())}`,
+			id,
+			count
+		)
 	}
 
 	async updateUser(userId, params) {

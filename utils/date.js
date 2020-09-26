@@ -1,6 +1,5 @@
 module.exports = {
-	getDate() {
-		const d = new Date()
+	getFormattedDate(d) {
 		const year = d.getFullYear()
 		const month = (d.getMonth() < 10 ? '0' : '') + d.getMonth()
 		const day = (d.getDate() < 10 ? '0' : '') + d.getDate()

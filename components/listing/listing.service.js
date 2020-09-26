@@ -13,6 +13,7 @@ class ListingService {
 	}
 
 	async createListing(user, params) {
+		// TODO: Save only allowed fields in the collection by filtering params.
 		const listing = new this.Listing(params)
 		listing.postedBy = user.id
 		await listing.save()
@@ -64,7 +65,7 @@ class ListingService {
 	}
 
 	async updateViewsCounter(id) {
-		return redis.hincrby(`views_${date.getDate()}`, id, 1)
+		return redis.hincrby(`views_${date.getFormattedDate(new Date())}`, id, 1)
 	}
 }
 
