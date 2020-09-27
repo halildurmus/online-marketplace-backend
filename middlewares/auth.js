@@ -14,10 +14,6 @@ module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 
 	token = text.parseAuthToken(token)
 
-	if (!token) {
-		throw new APIError(400, 'Invalid authorization header type.')
-	}
-
 	const decoded = jwt.verify(token, jwtSecretKey)
 	const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 

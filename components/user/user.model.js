@@ -1,6 +1,5 @@
 const { APIError } = require('../../helpers')
 const bcrypt = require('bcrypt')
-const { capitalizeEachWord } = require('../../utils/text')
 const { isEmail, isURL, matches } = require('validator')
 const jwt = require('jsonwebtoken')
 const { jwtSecretKey } = require('../../config')
@@ -47,7 +46,17 @@ const userSchema = new Schema(
 			},
 		},
 		bio: { type: String, trim: true, maxLength: 150, default: '' },
-		location: { type: { type: String }, coordinates: [] },
+		location: {
+			type: {
+				type: String,
+				enum: ['Point'],
+				required: true,
+			},
+			coordinates: {
+				type: [Number],
+				required: true,
+			},
+		},
 		role: {
 			type: String,
 			enum: ['admin', 'user'],
@@ -113,14 +122,6 @@ userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
 // Hash the plain text password before saving.
 userSchema.pre('save', async function (next) {
 	const user = this
-
-	if (user.isModified('firstName')) {
-		user.firstName = capitalizeEachWord(user.firstName)
-	}
-
-	if (user.isModified('lastName')) {
-		user.lastName = capitalizeEachWord(user.lastName)
-	}
 
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8)

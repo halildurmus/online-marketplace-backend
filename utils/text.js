@@ -1,17 +1,9 @@
+const { APIError } = require('../helpers')
+
 module.exports = {
-	capitalizeEachWord(str) {
-		str = str.split(' ')
-
-		for (let i = 0, x = str.length; i < x; i++) {
-			str[i] = str[i][0].toUpperCase() + str[i].substr(1)
-		}
-
-		return str.join(' ')
-	},
-
 	parseAuthToken(str) {
 		if (!str.startsWith('Bearer ')) {
-			return
+			throw new APIError(400, 'Invalid authorization header type.')
 		}
 
 		return str.replace('Bearer ', '')

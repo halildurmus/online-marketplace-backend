@@ -1,7 +1,7 @@
 const { nodeEnv } = require('../config')
 const { format, loggers, transports } = require('winston')
 const { colorize, combine, json, printf, timestamp } = format
-const loggerOptions = (service = 'server') => {
+const loggerOptions = (service) => {
 	return {
 		level: 'info',
 		format: combine(
@@ -25,7 +25,7 @@ const loggerOptions = (service = 'server') => {
 
 const loggerMongodb = loggers.add('mongodb', loggerOptions('mongodb'))
 const loggerRedis = loggers.add('redis', loggerOptions('redis'))
-const loggerServer = loggers.add('server', loggerOptions())
+const loggerServer = loggers.add('server', loggerOptions('server'))
 
 // Custom format for logging to the `console`.
 const myFormat = printf(({ level, message, service, timestamp }) => {
