@@ -21,13 +21,26 @@ const listingSchema = new Schema(
 		category: { type: String, required: true },
 		price: { type: Number, required: true, min: 0, trim: true },
 		currency: { type: String, required: true, length: 3, trim: true },
-		photos: [{ photo: { type: String, required: false } }],
-		videos: [{ video: { type: String } }],
+		photos: {
+			cover: { type: String, required: true },
+			photos: { type: [String], required: true },
+		},
+		videos: { type: [String] },
 		condition: {
 			type: String,
 			enum: ['new', 'like new', 'good', 'fair', 'poor'],
 		},
-		location: { type: { type: String }, coordinates: [] },
+		location: {
+			type: {
+				type: String,
+				enum: ['Point'],
+				required: true,
+			},
+			coordinates: {
+				type: [Number],
+				required: true,
+			},
+		},
 		favorites: { type: Number, min: 0, default: 0 },
 		views: { type: Number, min: 0, default: 0 },
 	},
