@@ -2,3 +2,6 @@
 /logs/
 /node_modules/
 .env
+.env.development
+.env.production
+.env.test

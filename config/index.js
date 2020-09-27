@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('lazy-universal-dotenv').getEnvironment()
 
 module.exports = {
 	apiPrefix: process.env.API_PREFIX,
