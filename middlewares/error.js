@@ -62,9 +62,7 @@ exports.handler = (err, req, res, next) => {
 	err.statusCode = err.statusCode || 500
 	err.status = err.status || 'error'
 
-	if (nodeEnv === 'development' || nodeEnv === 'test') {
-		sendErrorDev(err, res)
-	} else if (nodeEnv === 'production') {
+	if (nodeEnv === 'production' || nodeEnv === 'test') {
 		let error = { ...err }
 
 		if (err.name === 'CastError') error = handleCastErrorDB(err)
@@ -74,6 +72,8 @@ exports.handler = (err, req, res, next) => {
 		if (err.name === 'TokenExpiredError') error = handleJWTExpiredError()
 
 		sendErrorProd(error, res)
+	} else {
+		sendErrorDev(err, res)
 	}
 }
 
