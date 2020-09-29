@@ -2,11 +2,10 @@ const app = require('./app')
 const http = require('http')
 const logger = require('./utils').loggers.loggerServer
 const mongoose = require('mongoose')
-const port = process.env.PORT || 3000
 const { redis } = require('./db')
 
+const port = process.env.PORT || 3000
 const server = http.createServer(app)
-
 server.listen(port)
 
 server.once('listening', () => {

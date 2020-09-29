@@ -1,10 +1,9 @@
 const { APIError } = require('../../helpers')
-const Service = require('./user.service')
-const repo = new Service()
+const service = require('./user.service')
 
 module.exports = {
 	async createUser(params) {
-		const data = await repo.createUser(params)
+		const data = await service.createUser(params)
 
 		if (!data) {
 			throw new APIError(500, `Registration failed.`)
@@ -14,13 +13,13 @@ module.exports = {
 	},
 
 	async favoriteListing(userId, listingId) {
-		const data = await repo.favoriteListing(userId, listingId)
+		const data = await service.favoriteListing(userId, listingId)
 
 		if (!data) {
 			throw new APIError(400, 'You can only favorite a listing once.')
 		}
 
-		await repo.updateFavoritesCounter(listingId, 1)
+		await service.updateFavoritesCounter(listingId, 1)
 
 		return data
 	},
@@ -47,7 +46,7 @@ module.exports = {
 				: 1
 		}
 
-		const data = await repo.getUsers(match, sort, limit, skip)
+		const data = await service.getUsers(match, sort, limit, skip)
 
 		if (!data) {
 			throw new APIError(500, `Get users failed.`)
@@ -61,7 +60,7 @@ module.exports = {
 	},
 
 	async getUserFavorites(userId) {
-		const data = await repo.getUserFavorites(userId)
+		const data = await service.getUserFavorites(userId)
 
 		if (!data) {
 			throw new APIError(500, `Get user favorites failed.`)
@@ -71,7 +70,7 @@ module.exports = {
 	},
 
 	async getUserListings(userId) {
-		const data = await repo.getUserListings(userId)
+		const data = await service.getUserListings(userId)
 
 		if (!data) {
 			throw new APIError(500, `Get user listings failed.`)
@@ -81,7 +80,7 @@ module.exports = {
 	},
 
 	async getUserProfile(userId) {
-		const data = await repo.getUserProfile(userId)
+		const data = await service.getUserProfile(userId)
 
 		if (!data) {
 			throw new APIError(500, `Get user profile failed.`)
@@ -91,7 +90,7 @@ module.exports = {
 	},
 
 	async login(params) {
-		const data = await repo.login(params)
+		const data = await service.login(params)
 
 		if (!data) {
 			throw new APIError(500, `Login failed.`)
@@ -101,7 +100,7 @@ module.exports = {
 	},
 
 	async logout(user, accessToken) {
-		const data = await repo.logout(user, accessToken)
+		const data = await service.logout(user, accessToken)
 
 		if (!data) {
 			throw new APIError(500, `Logout failed.`)
@@ -111,7 +110,7 @@ module.exports = {
 	},
 
 	async logoutAll(user) {
-		const data = await repo.logoutAll(user)
+		const data = await service.logoutAll(user)
 
 		if (!data) {
 			throw new APIError(500, `Logout all failed.`)
@@ -121,7 +120,7 @@ module.exports = {
 	},
 
 	async removeUser(userId) {
-		const data = await repo.removeUser(userId)
+		const data = await service.removeUser(userId)
 
 		if (!data) {
 			throw new APIError(500, `Remove listing failed.`)
@@ -131,7 +130,7 @@ module.exports = {
 	},
 
 	async unfavoriteListing(userId, listingId) {
-		const data = await repo.unfavoriteListing(userId, listingId)
+		const data = await service.unfavoriteListing(userId, listingId)
 
 		if (!data) {
 			throw new APIError(
@@ -140,13 +139,13 @@ module.exports = {
 			)
 		}
 
-		await repo.updateFavoritesCounter(listingId, -1)
+		await service.updateFavoritesCounter(listingId, -1)
 
 		return data
 	},
 
 	async updateUser(userId, params) {
-		const data = await repo.updateUser(userId, params)
+		const data = await service.updateUser(userId, params)
 
 		if (!data) {
 			throw new APIError(500, 'Update user failed.')

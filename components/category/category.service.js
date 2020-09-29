@@ -1,23 +1,15 @@
 const { mongodb } = require('../../db')
 const Category = mongodb.Category
 
-class CategoryService {
-	constructor(db, collectionName) {
-		if (!db || !collectionName) {
-			this.Category = Category
-		} else {
-			this.Category = db.collection(collectionName)
-		}
-	}
-
+module.exports = {
 	async createCategory(params) {
-		const category = new this.Category(params)
+		const category = new Category(params)
 
 		return await category.save()
-	}
+	},
 
 	async getAllCategories() {
-		const categories = await this.Category.find({ parent: '/' })
+		const categories = await Category.find({ parent: '/' })
 
 		if (!categories) {
 			return
@@ -26,7 +18,7 @@ class CategoryService {
 		const allCategories = []
 
 		for (const category of categories) {
-			const subcategories = await this.Category.find({
+			const subcategories = await Category.find({
 				parent: category.category,
 			})
 
@@ -34,56 +26,54 @@ class CategoryService {
 		}
 
 		return allCategories
-	}
+	},
 
 	async getCategories() {
-		const categories = await this.Category.find({ parent: '/' })
+		const categories = await Category.find({ parent: '/' })
 
 		if (!categories) {
 			return
 		}
 
 		return categories
-	}
+	},
 
 	async getCategory(id) {
-		const category = await this.Category.findById(id)
+		const category = await Category.findById(id)
 
 		if (!category) {
 			return
 		}
 
 		return category
-	}
+	},
 
 	async getSubcategories(id) {
-		const { category } = await this.Category.findById(id)
-		const subcategories = await this.Category.find({ parent: category })
+		const { category } = await Category.findById(id)
+		const subcategories = await Category.find({ parent: category })
 
 		if (!subcategories) {
 			return
 		}
 
 		return subcategories
-	}
+	},
 
 	async removeCategory(id) {
-		const category = await this.Category.findById(id)
+		const category = await Category.findById(id)
 
 		if (!category) {
 			return
 		}
 
 		return await category.remove()
-	}
+	},
 
 	async updateCategory(id, params) {
-		const category = await this.Category.findById(id)
+		const category = await Category.findById(id)
 		const updates = Object.keys(params)
 		updates.forEach((update) => (category[update] = params[update]))
 
 		return await category.save()
-	}
+	},
 }
-
-module.exports = CategoryService

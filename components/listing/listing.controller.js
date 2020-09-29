@@ -1,10 +1,9 @@
 const { APIError } = require('../../helpers')
-const Service = require('./listing.service')
-const repo = new Service()
+const service = require('./listing.service')
 
 module.exports = {
 	async createListing(user, params) {
-		const data = await repo.createListing(user, params)
+		const data = await service.createListing(user, params)
 
 		if (!data) {
 			throw new APIError(500, `Create listing failed.`)
@@ -14,13 +13,13 @@ module.exports = {
 	},
 
 	async getListing(id) {
-		const data = await repo.getListing(id)
+		const data = await service.getListing(id)
 
 		if (!data) {
 			throw new APIError(500, `Get listing failed.`)
 		}
 
-		await repo.updateViewsCounter(id)
+		await service.updateViewsCounter(id)
 
 		return data
 	},
@@ -68,7 +67,7 @@ module.exports = {
 				: 1
 		}
 
-		const data = await repo.getListings(match, sort, limit, skip)
+		const data = await service.getListings(match, sort, limit, skip)
 
 		if (!data) {
 			throw new APIError(500, `Get all listings failed.`)
@@ -82,7 +81,7 @@ module.exports = {
 	},
 
 	async removeListing(id) {
-		const data = await repo.removeListing(id)
+		const data = await service.removeListing(id)
 
 		if (!data) {
 			throw new APIError(500, `Remove listing failed.`)
@@ -92,7 +91,7 @@ module.exports = {
 	},
 
 	async updateListing(id, params) {
-		const data = await repo.updateListing(id, params)
+		const data = await service.updateListing(id, params)
 
 		if (!data) {
 			throw new APIError(500, 'Update listing failed.')

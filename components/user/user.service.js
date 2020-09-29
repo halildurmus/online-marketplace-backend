@@ -3,39 +3,29 @@ const { mongodb, redis } = require('../../db')
 const Listing = mongodb.Listing
 const User = mongodb.User
 
-class UserService {
-	constructor(db, collectionName) {
-		if (!db || !collectionName) {
-			this.Listing = Listing
-			this.User = User
-		} else {
-			this.Listing = db.collection('Listing')
-			this.User = db.collection(collectionName)
-		}
-	}
-
+module.exports = {
 	async createUser(params) {
 		// TODO: Save only allowed fields in the collection by filtering params.
-		const user = new this.User(params)
+		const user = new User(params)
 		await user.save()
 		const token = await user.generateAuthToken()
 
 		return { user, token }
-	}
+	},
 
 	async favoriteListing(userId, listingId) {
-		if (await this.User.isFavoritedBefore(userId, listingId)) {
+		if (await User.isFavoritedBefore(userId, listingId)) {
 			return
 		}
 
-		const user = await this.User.findById(userId)
+		const user = await User.findById(userId)
 		user.favorites.set(listingId, true)
 
 		return await user.save()
-	}
+	},
 
 	async getUsers(match, sort, limit, skip) {
-		const users = await this.User.find(match)
+		const users = await User.find(match)
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))
 			.sort(sort)
@@ -45,62 +35,60 @@ class UserService {
 		}
 
 		return users
-	}
+	},
 
 	async getUserFavorites(userId) {
-		const user = await this.User.findById(userId)
+		const user = await User.findById(userId)
 		const favoriteIds = []
 
 		for (const key of user.favorites.keys()) {
 			favoriteIds.push(key)
 		}
 
-		return await this.Listing.find({ _id: { $in: favoriteIds } })
-	}
+		return Listing.find({ _id: { $in: favoriteIds } })
+	},
 
 	async getUserListings(userId) {
-		const user = await this.User.findById(userId)
+		const user = await User.findById(userId)
 		const listingIds = user.listings
 
-		return await this.Listing.find({ _id: { $in: listingIds } })
-	}
+		return Listing.find({ _id: { $in: listingIds } })
+	},
 
 	async getUserProfile(userId) {
-		return this.User.findById(userId)
-	}
+		return User.findById(userId)
+	},
 
 	async login(params) {
-		const user = await this.User.findByCredentials(
-			params.email,
-			params.password
-		)
+		const user = await User.findByCredentials(params.email, params.password)
 		const token = await user.generateAuthToken()
 
 		return { user, token }
-	}
+	},
 
 	async logout(user, accessToken) {
 		user.tokens = user.tokens.filter(({ token }) => token !== accessToken)
+
 		return await user.save()
-	}
+	},
 
 	async logoutAll(user) {
 		user.tokens = []
 		return await user.save()
-	}
+	},
 
 	async removeUser(userId) {
-		const user = await this.User.findById(userId)
+		const user = await User.findById(userId)
 
 		if (!user) {
 			return
 		}
 
 		return await user.remove()
-	}
+	},
 
 	async unfavoriteListing(userId, listingId) {
-		if (!(await this.User.isFavoritedBefore(userId, listingId))) {
+		if (!(await User.isFavoritedBefore(userId, listingId))) {
 			return
 		}
 
@@ -108,8 +96,8 @@ class UserService {
 		const mod = { $unset: {} }
 		mod.$unset[key] = 1
 
-		return await this.User.updateOne({ _id: userId }, mod)
-	}
+		return await User.updateOne({ _id: userId }, mod)
+	},
 
 	async updateFavoritesCounter(id, count) {
 		return redis.hincrby(
@@ -117,15 +105,13 @@ class UserService {
 			id,
 			count
 		)
-	}
+	},
 
 	async updateUser(userId, params) {
-		const user = await this.User.findById(userId)
+		const user = await User.findById(userId)
 		const updates = Object.keys(params)
 		updates.forEach((update) => (user[update] = params[update]))
 
 		return await user.save()
-	}
+	},
 }
-
-module.exports = UserService
