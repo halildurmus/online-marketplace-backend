@@ -26,45 +26,30 @@ module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 	next()
 })
 
-module.exports.grantAccess = function (action, resource) {
+module.exports.grantAccess = (action, resource) => {
 	return catchAsync(async (req, res, next) => {
-		if (req.user.role === 'user' && req.method === ('DELETE' || 'PATCH')) {
+		const error = new APIError(
+			403,
+			'You do not have permission to perform this action.'
+		)
+		if (
+			req.user.role === 'user' &&
+			(req.method === 'DELETE' || req.method === 'PATCH')
+		) {
 			if (
 				resource === 'listing' &&
 				!req.user.listings.includes(req.params.id)
 			) {
-				throw new APIError(
-					403,
-					'You do not have permission to perform this action.'
-				)
+				throw error
 			} else if (resource === 'profile' && req.user.id !== req.params.id) {
-				throw new APIError(
-					403,
-					'You do not have permission to perform this action.'
-				)
+				throw error
 			}
 		}
 
 		const permission = roles.can(req.user.role)[action](resource)
 
 		if (!permission.granted) {
-			throw new APIError(
-				403,
-				'You do not have permission to perform this action.'
-			)
-		}
-
-		next()
-	})
-}
-
-module.exports.restrictTo = function (...roles) {
-	return catchAsync(async (req, res, next) => {
-		if (!roles.includes(req.user.role)) {
-			throw new APIError(
-				403,
-				'You do not have permission to perform this action.'
-			)
+			throw error
 		}
 
 		next()

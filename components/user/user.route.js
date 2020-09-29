@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
-const { allowIfLoggedIn, grantAccess, restrictTo } = auth
+const { allowIfLoggedIn, grantAccess } = auth
 const { isValidListingId } = require('../listing/listing.middleware')
 const { isValidOperation, isValidUserId } = require('./user.middleware')
 const {
@@ -78,7 +78,7 @@ router.get(
 	'/users',
 	allowIfLoggedIn,
 	isValidUserId,
-	restrictTo('admin'),
+	grantAccess('readAny', 'profiles'),
 	catchAsync(async (req, res) => {
 		res.json(await getUsers(req.query))
 	})
@@ -116,7 +116,7 @@ router.patch(
 	'/users/:id',
 	allowIfLoggedIn,
 	isValidUserId,
-	grantAccess('updateOwn', 'profile'),
+	grantAccess('updateAny', 'profile'),
 	isRequestBodyBlank,
 	isValidOperation,
 	catchAsync(async (req, res) => {
