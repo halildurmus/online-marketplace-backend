@@ -62,7 +62,7 @@ exports.handler = (err, req, res, next) => {
 	err.statusCode = err.statusCode || 500
 	err.status = err.status || 'error'
 
-	if (nodeEnv === 'development') {
+	if (nodeEnv === 'development' || nodeEnv === 'test') {
 		sendErrorDev(err, res)
 	} else if (nodeEnv === 'production') {
 		let error = { ...err }

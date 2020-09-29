@@ -5,4 +5,5 @@ module.exports = {
 	jwtSecretKey: process.env.JWT_SECRET_KEY,
 	mongodbUri: process.env.MONGODB_URI,
 	nodeEnv: process.env.NODE_ENV,
+	redisUri: process.env.REDIS_URL,
 }
