@@ -8,14 +8,22 @@ const handleCastErrorDB = (err) => {
 	const message = `Invalid ${err.path}: ${err.value}`
 	return new APIError(400, message)
 }
+
 const handleDuplicateFieldsDB = (err) => {
-	const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]
-	const message = `Duplicate field value ${value}. Please use another value!`
+	let duplicateFields = ''
+	Object.keys(err.keyValue).forEach((key) => {
+		duplicateFields += `${key}: "${err.keyValue[key]}"`
+	})
+
+	const message = `Duplicate field value(s) ${duplicateFields}. Please use another value!`
+
 	return new APIError(400, message)
 }
+
 const handleValidationErrorDB = (err) => {
 	const errors = Object.values(err.errors).map((el) => el.message)
 	const message = `Invalid input data. ${errors.join('. ')}`
+
 	return new APIError(400, message)
 }
 
