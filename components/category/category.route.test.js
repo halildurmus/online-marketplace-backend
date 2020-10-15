@@ -2,7 +2,7 @@ const dbHandler = require('../../tests/db')
 
 // Connects to the in-memory database.
 beforeAll(async () => {
-	await dbHandler.writeUriToEnv()
+	await dbHandler.writeMongoUriToEnv()
 	await require('../../db').mongodb
 })
 

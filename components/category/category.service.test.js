@@ -99,7 +99,7 @@ describe('getCategories service', () => {
 		expect(categories).toHaveLength(0)
 	})
 
-	it('Should return parent categories', async () => {
+	it('Should return all parent categories', async () => {
 		await service.createCategory({ name: 'Electronics' })
 		await service.createCategory({ name: 'Gaming' })
 		await service.createCategory({
@@ -131,7 +131,7 @@ describe('getCategory service', () => {
 		expect(category).toBeUndefined()
 	})
 
-	it('Should find the category by id', async () => {
+	it('Should find the category', async () => {
 		const category = await service.createCategory({ name: 'Electronics' })
 		const foundCategory = await service.getCategory(category.id)
 
@@ -146,7 +146,7 @@ describe('getSubcategories service', () => {
 		expect(category).toBeUndefined()
 	})
 
-	it('Should find the subcategories of a category by id', async () => {
+	it('Should find the subcategories of a category', async () => {
 		const category = await service.createCategory({ name: 'Gaming' })
 		await service.createCategory({
 			name: 'Keyboard',
@@ -180,7 +180,7 @@ describe('removeCategory service', () => {
 		expect(category).toBeUndefined()
 	})
 
-	it('Should remove the categories by id', async () => {
+	it('Should remove the categories', async () => {
 		const category = await service.createCategory({ name: 'Gaming' })
 		const subcategory = await service.createCategory({
 			name: 'Keyboard',
@@ -201,7 +201,7 @@ describe('updateCategory service', () => {
 		expect(category).toBeUndefined()
 	})
 
-	it('Should update the categories by id', async () => {
+	it('Should update the categories', async () => {
 		const category = await service.createCategory({ name: 'Gaming' })
 		const subcategory = await service.createCategory({
 			name: 'Keyboard',

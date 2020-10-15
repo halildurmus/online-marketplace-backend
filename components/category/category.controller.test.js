@@ -63,7 +63,7 @@ describe('getCategory controller', () => {
 		).rejects.toThrow('Get category failed.')
 	})
 
-	it('Should find the category by id', async () => {
+	it('Should find the category', async () => {
 		const category = await controller.createCategory({ name: 'Electronics' })
 		const foundCategory = await controller.getCategory(category.id)
 
@@ -78,7 +78,7 @@ describe('getSubcategories controller', () => {
 		).rejects.toThrow('Get subcategories failed.')
 	})
 
-	it('Should find the subcategories of a category by id', async () => {
+	it('Should find the subcategories of a category', async () => {
 		const category = await controller.createCategory({ name: 'Gaming' })
 		await controller.createCategory({
 			name: 'Keyboard',
@@ -96,13 +96,13 @@ describe('getSubcategories controller', () => {
 })
 
 describe('removeCategory controller', () => {
-	it('Should throw an APIError while trying to remove a category by invalid id', async () => {
+	it('Should throw an APIError while trying to remove a category with invalid id', async () => {
 		await expect(async () =>
 			controller.removeCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('Remove category failed.')
 	})
 
-	it('Should remove the categories by id', async () => {
+	it('Should remove the categories', async () => {
 		const category = await controller.createCategory({ name: 'Gaming' })
 		const subcategory = await controller.createCategory({
 			name: 'Keyboard',
@@ -117,13 +117,13 @@ describe('removeCategory controller', () => {
 })
 
 describe('updateCategory controller', () => {
-	it('Should throw an APIError while trying to update a category by invalid id', async () => {
+	it('Should throw an APIError while trying to update a category with invalid id', async () => {
 		await expect(async () =>
 			controller.updateCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('Update category failed.')
 	})
 
-	it('Should update the categories by id', async () => {
+	it('Should update the categories', async () => {
 		const category = await controller.createCategory({ name: 'Gaming' })
 		const subcategory = await controller.createCategory({
 			name: 'Keyboard',

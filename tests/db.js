@@ -22,6 +22,8 @@ module.exports.connect = async () => {
 	}
 
 	await mongoose.connect(uri, mongooseOpts)
+
+	require('../components/user/user.model')
 }
 
 // Removes all the data for all db collections.
@@ -42,7 +44,7 @@ module.exports.closeDatabase = async () => {
 }
 
 // Writes the mongod URI to .env.test file.
-module.exports.writeUriToEnv = async () => {
+module.exports.writeMongoUriToEnv = async () => {
 	const mongodUri = await mongod.getUri()
 	const filePath = path.join(__dirname, '..', '.env.test')
 	const parsedFile = envfile.parse('../.env.test')
