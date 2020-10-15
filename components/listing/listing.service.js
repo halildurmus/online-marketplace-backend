@@ -1,6 +1,6 @@
 const { date } = require('../../utils')
-const { mongodb, redis } = require('../../db')
-const Listing = mongodb.Listing
+const Listing = require('./listing.model')
+const { redis } = require('../../db')
 
 module.exports = {
 	async createListing(user, params) {

@@ -58,6 +58,3 @@ mongoose.connection.on('close', () => {
 })
 
 module.exports = connectWithRetry()
-module.exports.Category = require('../components/category/category.model')
-module.exports.Listing = require('../components/listing/listing.model')
-module.exports.User = require('../components/user/user.model')

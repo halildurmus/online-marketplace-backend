@@ -1,7 +1,7 @@
 const { date } = require('../../utils')
-const { mongodb, redis } = require('../../db')
-const Listing = mongodb.Listing
-const User = mongodb.User
+const Listing = require('../listing/listing.model')
+const { redis } = require('../../db')
+const User = require('./user.model')
 
 module.exports = {
 	async createUser(params) {
@@ -96,7 +96,7 @@ module.exports = {
 		const mod = { $unset: {} }
 		mod.$unset[key] = 1
 
-		return await User.updateOne({ _id: userId }, mod)
+		return User.updateOne({ _id: userId }, mod)
 	},
 
 	async updateFavoritesCounter(id, count) {
