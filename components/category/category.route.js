@@ -2,7 +2,10 @@ const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { allowIfLoggedIn, grantAccess } = auth
-const { isValidCategoryId } = require('./category.middleware')
+const {
+	isParentCategoryExists,
+	isValidCategoryId,
+} = require('./category.middleware')
 const {
 	createCategory,
 	getAllCategories,
@@ -52,6 +55,7 @@ router.post(
 	allowIfLoggedIn,
 	grantAccess('createAny', 'category'),
 	isRequestBodyBlank,
+	isParentCategoryExists,
 	catchAsync(async (req, res) => {
 		res.status(201).json(await createCategory(req.body))
 	})

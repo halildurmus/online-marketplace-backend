@@ -1,5 +1,4 @@
-const { mongodb } = require('../../db')
-const Category = mongodb.Category
+const Category = require('./category.model')
 
 module.exports = {
 	async createCategory(params) {
@@ -49,8 +48,13 @@ module.exports = {
 	},
 
 	async getSubcategories(id) {
-		const { category } = await Category.findById(id)
-		const subcategories = await Category.find({ parent: category })
+		const category = await Category.findById(id)
+
+		if (!category) {
+			return
+		}
+
+		const subcategories = await Category.find({ parent: category.category })
 
 		if (!subcategories) {
 			return
@@ -71,6 +75,11 @@ module.exports = {
 
 	async updateCategory(id, params) {
 		const category = await Category.findById(id)
+
+		if (!category) {
+			return
+		}
+
 		const updates = Object.keys(params)
 		updates.forEach((update) => (category[update] = params[update]))
 
