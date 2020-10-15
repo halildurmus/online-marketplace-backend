@@ -72,6 +72,7 @@ exports.handler = (err, req, res, next) => {
 
 	if (nodeEnv === 'production' || nodeEnv === 'test') {
 		let error = { ...err }
+		error.message = err.message
 
 		if (err.name === 'CastError') error = handleCastErrorDB(err)
 		if (err.code === 11000) error = handleDuplicateFieldsDB(err)
