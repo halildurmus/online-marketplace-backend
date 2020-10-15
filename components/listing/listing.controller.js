@@ -2,8 +2,8 @@ const { APIError } = require('../../helpers')
 const service = require('./listing.service')
 
 module.exports = {
-	async createListing(user, params) {
-		const data = await service.createListing(user, params)
+	async createListing(userId, params) {
+		const data = await service.createListing(userId, params)
 
 		if (!data) {
 			throw new APIError(500, `Create listing failed.`)

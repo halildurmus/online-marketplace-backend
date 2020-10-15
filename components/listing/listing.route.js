@@ -34,7 +34,7 @@ router.post(
 	allowIfLoggedIn,
 	isRequestBodyBlank,
 	catchAsync(async (req, res) => {
-		res.status(201).json(await createListing(req.user, req.body))
+		res.status(201).json(await createListing(req.user.id, req.body))
 	})
 )
 
