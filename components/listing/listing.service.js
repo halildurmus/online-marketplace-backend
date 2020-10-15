@@ -1,12 +1,12 @@
 const { date } = require('../../utils')
 const Listing = require('./listing.model')
-const { redis } = require('../../db')
+const redis = require('../../db/redis')
 
 module.exports = {
-	async createListing(user, params) {
+	async createListing(userId, params) {
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const listing = new Listing(params)
-		listing.postedBy = user.id
+		listing.postedBy = userId
 		await listing.save()
 
 		return listing
@@ -49,6 +49,11 @@ module.exports = {
 
 	async updateListing(id, params) {
 		const listing = await Listing.findById(id)
+
+		if (!listing) {
+			return
+		}
+
 		const updates = Object.keys(params)
 		updates.forEach((update) => (listing[update] = params[update]))
 

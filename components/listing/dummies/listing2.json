@@ -1,0 +1,15 @@
+{
+	"title": "iPhone 12 Pro",
+	"description": "256GB",
+	"price": 20000,
+	"currency": "TRY",
+	"category": "/electronics/smartphones",
+	"location": {
+		"type": "Point",
+		"coordinates": [13.405, 52.52]
+	},
+	"photos": {
+		"cover": "https://gravatar.com/cover",
+		"photos": ["https://gravatar.com/photo1", "https://gravatar.com/photo2"]
+	}
+}
