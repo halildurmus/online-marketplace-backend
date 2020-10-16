@@ -73,10 +73,6 @@ module.exports = {
 			throw new APIError(500, `Get all listings failed.`)
 		}
 
-		if (data.length === 0) {
-			throw new APIError(404, `Listings not found.`)
-		}
-
 		return data
 	},
 

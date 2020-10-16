@@ -25,7 +25,7 @@ describe('createListing service', () => {
 			listing1
 		)
 
-		expect(listing.title).toEqual(listing1.title)
+		expect(listing.toJSON()).toEqual(expect.objectContaining(listing1))
 		expect(listing.postedBy.toString()).toBe('5f785989e8421c13d422f934')
 		expect(listing.videos).toHaveLength(0)
 		expect(listing.favorites).toEqual(0)
@@ -48,7 +48,7 @@ describe('getListing service', () => {
 
 		const foundListing = await service.getListing(listing.id)
 
-		expect(foundListing.title).toEqual(listing1.title)
+		expect(foundListing.toJSON()).toEqual(expect.objectContaining(listing1))
 	})
 })
 
@@ -111,7 +111,7 @@ describe('getListings service', () => {
 
 		expect(Array.isArray(listings)).toBeTruthy()
 		expect(listings).toHaveLength(1)
-		expect(listings[0].title).toEqual(listing1.title)
+		expect(listings[0]).toEqual(expect.objectContaining(listing1))
 	})
 
 	it('Should skip the first listing', async () => {
@@ -121,7 +121,7 @@ describe('getListings service', () => {
 
 		expect(Array.isArray(listings)).toBeTruthy()
 		expect(listings).toHaveLength(1)
-		expect(listings[0].title).toEqual(listing2.title)
+		expect(listings[0]).toEqual(expect.objectContaining(listing2))
 	})
 })
 
@@ -139,7 +139,7 @@ describe('removeListing service', () => {
 		)
 		const removedListing = await service.removeListing(listing.id)
 
-		expect(removedListing.title).toEqual(listing1.title)
+		expect(removedListing.toJSON()).toEqual(expect.objectContaining(listing1))
 	})
 })
 

@@ -9,6 +9,7 @@ beforeAll(async () => {
 // Clears all test data after every test.
 afterEach(async () => await dbHandler.clearDatabase())
 
+const admin = require('../user/dummies/admin.json')
 const app = require('../../app')
 const mongoose = require('mongoose')
 const Category = mongoose.model('Category')
@@ -18,23 +19,13 @@ const request = require('supertest')
 let authToken
 beforeEach(async () => {
 	// Creates an admin account.
-	await User.create({
-		email: 'haroldfinch@gmail.com',
-		firstName: 'Harold',
-		lastName: 'Finch',
-		password: 'Test1234',
-		role: 'admin',
-		location: {
-			type: 'Point',
-			coordinates: [13.405, 52.52],
-		},
-	})
+	await User.create(admin)
 
 	// Authenticates with the admin account.
 	const user = await request(app)
 		.post(`${process.env.API_PREFIX}/auth/login`)
 		.send({
-			email: 'haroldfinch@gmail.com',
+			email: 'admin@gmail.com',
 			password: 'Test1234',
 		})
 		.expect(200)
@@ -100,11 +91,11 @@ describe('GET /categories', () => {
 			.expect(200)
 
 		expect(Array.isArray(res.body)).toBeTruthy()
+		expect(res.body).toHaveLength(2)
 		expect(res.body).toMatchObject([
 			{ name: 'Electronics' },
 			{ name: 'Gaming' },
 		])
-		expect(res.body).toHaveLength(2)
 	})
 })
 
