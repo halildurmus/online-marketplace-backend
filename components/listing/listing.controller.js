@@ -6,7 +6,7 @@ module.exports = {
 		const data = await service.createListing(userId, params)
 
 		if (!data) {
-			throw new APIError(500, `Create listing failed.`)
+			throw new APIError(400, `You need to provide userId and listing params.`)
 		}
 
 		return data
@@ -16,7 +16,7 @@ module.exports = {
 		const data = await service.getListing(id)
 
 		if (!data) {
-			throw new APIError(500, `Get listing failed.`)
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		await service.updateViewsCounter(id)
@@ -80,7 +80,7 @@ module.exports = {
 		const data = await service.removeListing(id)
 
 		if (!data) {
-			throw new APIError(500, `Remove listing failed.`)
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		return data
@@ -90,7 +90,7 @@ module.exports = {
 		const data = await service.updateListing(id, params)
 
 		if (!data) {
-			throw new APIError(500, 'Update listing failed.')
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		return data

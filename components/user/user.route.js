@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { allowIfLoggedIn, grantAccess } = auth
-const { isValidListingId } = require('../listing/listing.middleware')
-const { isValidOperation, isValidUserId } = require('./user.middleware')
+const { isValidOperation } = require('./user.middleware')
 const {
 	createUser,
 	favoriteListing,
@@ -58,7 +57,6 @@ router.post(
 router.post(
 	'/favorites',
 	allowIfLoggedIn,
-	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await favoriteListing(req.user.id, req.body.id))
 	})
@@ -67,7 +65,6 @@ router.post(
 router.delete(
 	'/favorites/:id',
 	allowIfLoggedIn,
-	isValidListingId,
 	grantAccess('deleteOwn', 'favorites'),
 	catchAsync(async (req, res) => {
 		res.json(await unfavoriteListing(req.user.id, req.params.id))
@@ -77,7 +74,6 @@ router.delete(
 router.get(
 	'/users',
 	allowIfLoggedIn,
-	isValidUserId,
 	grantAccess('readAny', 'profiles'),
 	catchAsync(async (req, res) => {
 		res.json(await getUsers(req.query))
@@ -106,7 +102,6 @@ router.patch(
 router.get(
 	'/users/:id',
 	allowIfLoggedIn,
-	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserProfile(req.params.id))
 	})
@@ -115,7 +110,6 @@ router.get(
 router.patch(
 	'/users/:id',
 	allowIfLoggedIn,
-	isValidUserId,
 	grantAccess('updateAny', 'profile'),
 	isRequestBodyBlank,
 	isValidOperation,
@@ -127,7 +121,6 @@ router.patch(
 router.delete(
 	'/users/:id',
 	allowIfLoggedIn,
-	isValidUserId,
 	grantAccess('deleteAny', 'profile'),
 	catchAsync(async (req, res) => {
 		res.json(await removeUser(req.params.id))
@@ -145,7 +138,6 @@ router.get(
 router.get(
 	'/users/:id/favorites',
 	allowIfLoggedIn,
-	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserFavorites(req.params.id))
 	})
@@ -162,7 +154,6 @@ router.get(
 router.get(
 	'/users/:id/listings',
 	allowIfLoggedIn,
-	isValidUserId,
 	catchAsync(async (req, res) => {
 		res.json(await getUserListings(req.params.id))
 	})

@@ -29,7 +29,7 @@ describe('getListing controller', () => {
 	it('Should throw an APIError while trying to find a listing with invalid id', async () => {
 		await expect(
 			async () => await controller.getListing('5f785989e8421c13d422f934')
-		).rejects.toThrow('Get listing failed.')
+		).rejects.toThrow('The listing not found.')
 	})
 
 	it('Should find the listing', async () => {
@@ -63,7 +63,7 @@ describe('removeListing controller', () => {
 	it('Should throw an APIError while trying to remove a listing with invalid id', async () => {
 		await expect(async () =>
 			controller.removeListing('5f785989e8421c13d422f934')
-		).rejects.toThrow('Remove listing failed.')
+		).rejects.toThrow('The listing not found.')
 	})
 
 	it('Should remove the listing', async () => {
@@ -81,7 +81,7 @@ describe('updateListing controller', () => {
 	it('Should throw an APIError while trying to update a listing with invalid id', async () => {
 		await expect(async () =>
 			controller.updateListing('5f785989e8421c13d422f934')
-		).rejects.toThrow('Update listing failed.')
+		).rejects.toThrow('The listing not found.')
 	})
 
 	it('Should update the listing', async () => {

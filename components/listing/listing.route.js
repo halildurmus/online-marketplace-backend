@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { allowIfLoggedIn, grantAccess } = auth
-const { isValidListingId, isValidOperation } = require('./listing.middleware')
+const { isValidOperation } = require('./listing.middleware')
 const {
 	createListing,
 	getListing,
@@ -22,7 +22,6 @@ router.get(
 router.get(
 	'/listings/:id',
 	allowIfLoggedIn,
-	isValidListingId,
 	catchAsync(async (req, res) => {
 		res.json(await getListing(req.params.id))
 	})
@@ -41,7 +40,6 @@ router.post(
 router.patch(
 	'/listings/:id',
 	allowIfLoggedIn,
-	isValidListingId,
 	grantAccess('updateOwn', 'listing'),
 	isRequestBodyBlank,
 	isValidOperation,
@@ -53,7 +51,6 @@ router.patch(
 router.delete(
 	'/listings/:id',
 	allowIfLoggedIn,
-	isValidListingId,
 	grantAccess('deleteOwn', 'listing'),
 	catchAsync(async (req, res) => {
 		res.json(await removeListing(req.params.id))

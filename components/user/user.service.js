@@ -22,6 +22,12 @@ module.exports = {
 			return
 		}
 
+		const listing = await Listing.findById(listingId)
+
+		if (!listing) {
+			return
+		}
+
 		if (await User.isFavoritedBefore(userId, listingId)) {
 			return
 		}
@@ -126,6 +132,12 @@ module.exports = {
 
 	async unfavoriteListing(userId, listingId) {
 		if (!userId || !listingId) {
+			return
+		}
+
+		const listing = await Listing.findById(listingId)
+
+		if (!listing) {
 			return
 		}
 

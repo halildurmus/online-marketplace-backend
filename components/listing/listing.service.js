@@ -4,6 +4,10 @@ const redis = require('../../db/redis')
 
 module.exports = {
 	async createListing(userId, params) {
+		if (!userId || !params) {
+			return
+		}
+
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const listing = new Listing(params)
 		listing.postedBy = userId
