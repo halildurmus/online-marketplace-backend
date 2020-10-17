@@ -111,7 +111,7 @@ describe('getListings service', () => {
 
 		expect(Array.isArray(listings)).toBeTruthy()
 		expect(listings).toHaveLength(1)
-		expect(listings[0]).toEqual(expect.objectContaining(listing1))
+		expect(listings[0].toJSON()).toEqual(expect.objectContaining(listing1))
 	})
 
 	it('Should skip the first listing', async () => {
@@ -121,7 +121,7 @@ describe('getListings service', () => {
 
 		expect(Array.isArray(listings)).toBeTruthy()
 		expect(listings).toHaveLength(1)
-		expect(listings[0]).toEqual(expect.objectContaining(listing2))
+		expect(listings[0].toJSON()).toEqual(expect.objectContaining(listing2))
 	})
 })
 
