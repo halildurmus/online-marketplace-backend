@@ -1,0 +1,10 @@
+{
+	"email": "user2@gmail.com",
+	"firstName": "Jensen",
+	"lastName": "Ackles",
+	"password": "Test1234",
+	"location": {
+		"type": "Point",
+		"coordinates": [13.405, 52.52]
+	}
+}

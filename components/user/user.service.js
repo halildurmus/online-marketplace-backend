@@ -1,7 +1,7 @@
 const { date } = require('../../utils')
 const Listing = require('../listing/listing.model')
-const { redis } = require('../../db')
 const User = require('./user.model')
+const redis = require('../../db/redis')
 
 module.exports = {
 	async createUser(params) {
@@ -56,7 +56,13 @@ module.exports = {
 	},
 
 	async getUserProfile(userId) {
-		return User.findById(userId)
+		const user = await User.findById(userId)
+
+		if (!user) {
+			return
+		}
+
+		return user
 	},
 
 	async login(params) {
@@ -74,6 +80,7 @@ module.exports = {
 
 	async logoutAll(user) {
 		user.tokens = []
+
 		return await user.save()
 	},
 
@@ -109,6 +116,11 @@ module.exports = {
 
 	async updateUser(userId, params) {
 		const user = await User.findById(userId)
+
+		if (!user) {
+			return
+		}
+
 		const updates = Object.keys(params)
 		updates.forEach((update) => (user[update] = params[update]))
 
