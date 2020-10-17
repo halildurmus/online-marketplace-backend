@@ -3,10 +3,6 @@ const router = express.Router()
 const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { allowIfLoggedIn, grantAccess } = auth
 const {
-	isParentCategoryExists,
-	isValidCategoryId,
-} = require('./category.middleware')
-const {
 	createCategory,
 	getAllCategories,
 	getCategories,
@@ -35,7 +31,6 @@ router.get(
 router.get(
 	'/categories/:id',
 	allowIfLoggedIn,
-	isValidCategoryId,
 	catchAsync(async (req, res) => {
 		res.json(await getCategory(req.params.id))
 	})
@@ -44,7 +39,6 @@ router.get(
 router.get(
 	'/categories/:id/subcategories',
 	allowIfLoggedIn,
-	isValidCategoryId,
 	catchAsync(async (req, res) => {
 		res.json(await getSubcategories(req.params.id))
 	})
@@ -55,7 +49,6 @@ router.post(
 	allowIfLoggedIn,
 	grantAccess('createAny', 'category'),
 	isRequestBodyBlank,
-	isParentCategoryExists,
 	catchAsync(async (req, res) => {
 		res.status(201).json(await createCategory(req.body))
 	})
@@ -64,7 +57,6 @@ router.post(
 router.patch(
 	'/categories/:id',
 	allowIfLoggedIn,
-	isValidCategoryId,
 	grantAccess('updateAny', 'category'),
 	isRequestBodyBlank,
 	catchAsync(async (req, res) => {
@@ -75,7 +67,6 @@ router.patch(
 router.delete(
 	'/categories/:id',
 	allowIfLoggedIn,
-	isValidCategoryId,
 	grantAccess('deleteAny', 'category'),
 	catchAsync(async (req, res) => {
 		res.json(await removeCategory(req.params.id))

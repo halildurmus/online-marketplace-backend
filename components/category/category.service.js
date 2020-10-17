@@ -2,6 +2,17 @@ const Category = require('./category.model')
 
 module.exports = {
 	async createCategory(params) {
+		if (params.parent) {
+			const regExp = new RegExp(`^${params.parent}$`, 'i')
+			const isParentCategoryExists = await Category.findOne({
+				name: { $regex: regExp },
+			})
+
+			if (!isParentCategoryExists) {
+				return
+			}
+		}
+
 		const category = new Category(params)
 
 		return await category.save()

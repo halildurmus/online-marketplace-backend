@@ -36,7 +36,7 @@ module.exports = {
 		const data = await service.getCategory(id)
 
 		if (!data) {
-			throw new APIError(500, `Get category failed.`)
+			throw new APIError(404, `The category not found.`)
 		}
 
 		return data
@@ -46,7 +46,7 @@ module.exports = {
 		const data = await service.getSubcategories(id)
 
 		if (!data) {
-			throw new APIError(500, `Get subcategories failed.`)
+			throw new APIError(404, `The subcategory not found.`)
 		}
 
 		return data
@@ -56,7 +56,7 @@ module.exports = {
 		const data = await service.removeCategory(id)
 
 		if (!data) {
-			throw new APIError(500, 'Remove category failed.')
+			throw new APIError(404, 'The category not found.')
 		}
 
 		return data
@@ -66,7 +66,7 @@ module.exports = {
 		const data = await service.updateCategory(id, params)
 
 		if (!data) {
-			throw new APIError(500, 'Update category failed.')
+			throw new APIError(404, 'The category not found.')
 		}
 
 		return data

@@ -25,6 +25,7 @@ describe('createCategory service', () => {
 	})
 
 	it('Should create a subcategory', async () => {
+		await service.createCategory({ name: 'Gaming' })
 		const category = await service.createCategory({
 			name: 'Mouse',
 			parent: 'Gaming',
