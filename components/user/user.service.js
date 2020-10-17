@@ -32,11 +32,7 @@ module.exports = {
 		return await user.save()
 	},
 
-	async getUsers(match, sort, limit, skip) {
-		if (!match || !sort || !limit || !skip) {
-			return
-		}
-
+	async getUsers(match = {}, sort = {}, limit = 0, skip = 0) {
 		const users = await User.find(match)
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))

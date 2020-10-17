@@ -85,12 +85,6 @@ describe('getUsers service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.getUsers()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should return empty array if no users found', async () => {
 		const users = await service.getUsers({}, {}, 0, 0)
 
@@ -308,7 +302,7 @@ describe('logout service', () => {
 })
 
 describe('logoutAll service', () => {
-	it('Should return undefined if the params are not provided', async () => {
+	it('Should return undefined if the user object is not provided', async () => {
 		const res = await service.logoutAll()
 
 		expect(res).toBeUndefined()

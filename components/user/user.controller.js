@@ -24,7 +24,7 @@ module.exports = {
 		return data
 	},
 
-	async getUsers(params) {
+	async getUsers(params = {}) {
 		const match = {}
 		const sort = {}
 		const limit = params.limit || 0
@@ -50,10 +50,6 @@ module.exports = {
 
 		if (!data) {
 			throw new APIError(500, `Get users failed.`)
-		}
-
-		if (data.length === 0) {
-			throw new APIError(404, `Users not found.`)
 		}
 
 		return data
@@ -123,7 +119,7 @@ module.exports = {
 		const data = await service.removeUser(userId)
 
 		if (!data) {
-			throw new APIError(500, `Remove listing failed.`)
+			throw new APIError(500, `Remove user failed.`)
 		}
 
 		return data
