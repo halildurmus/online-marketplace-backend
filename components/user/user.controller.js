@@ -6,7 +6,7 @@ module.exports = {
 		const data = await service.createUser(params)
 
 		if (!data) {
-			throw new APIError(500, `Registration failed.`)
+			throw new APIError(400, 'You need to provide the params.')
 		}
 
 		return data
@@ -49,7 +49,7 @@ module.exports = {
 		const data = await service.getUsers(match, sort, limit, skip)
 
 		if (!data) {
-			throw new APIError(500, `Get users failed.`)
+			throw new APIError(404, 'The users not found.')
 		}
 
 		return data
@@ -59,7 +59,7 @@ module.exports = {
 		const data = await service.getUserFavorites(userId)
 
 		if (!data) {
-			throw new APIError(500, `Get user favorites failed.`)
+			throw new APIError(404, `The user's favorites not found.`)
 		}
 
 		return data
@@ -69,7 +69,7 @@ module.exports = {
 		const data = await service.getUserListings(userId)
 
 		if (!data) {
-			throw new APIError(500, `Get user listings failed.`)
+			throw new APIError(404, `The user's listings not found.`)
 		}
 
 		return data
@@ -79,7 +79,7 @@ module.exports = {
 		const data = await service.getUserProfile(userId)
 
 		if (!data) {
-			throw new APIError(500, `Get user profile failed.`)
+			throw new APIError(404, `The user not found.`)
 		}
 
 		return data
@@ -89,7 +89,7 @@ module.exports = {
 		const data = await service.login(params)
 
 		if (!data) {
-			throw new APIError(500, `Login failed.`)
+			throw new APIError(400, `You need to provide your credentials.`)
 		}
 
 		return data
@@ -99,7 +99,7 @@ module.exports = {
 		const data = await service.logout(user, accessToken)
 
 		if (!data) {
-			throw new APIError(500, `Logout failed.`)
+			throw new APIError(404, 'The user not found.')
 		}
 
 		return { message: 'Logout successful.' }
@@ -109,7 +109,7 @@ module.exports = {
 		const data = await service.logoutAll(user)
 
 		if (!data) {
-			throw new APIError(500, `Logout all failed.`)
+			throw new APIError(404, 'The user not found.')
 		}
 
 		return { message: 'Logout all successful.' }
@@ -119,7 +119,7 @@ module.exports = {
 		const data = await service.removeUser(userId)
 
 		if (!data) {
-			throw new APIError(500, `Remove user failed.`)
+			throw new APIError(404, 'The user not found.')
 		}
 
 		return data
@@ -144,7 +144,7 @@ module.exports = {
 		const data = await service.updateUser(userId, params)
 
 		if (!data) {
-			throw new APIError(500, 'Update user failed.')
+			throw new APIError(404, 'The user not found.')
 		}
 
 		return data

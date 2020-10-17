@@ -82,7 +82,7 @@ describe('getUsers controller', () => {
 describe('getUserFavorites controller', () => {
 	it('Should throw an APIError while trying to get user favorites without providing userId', async () => {
 		await expect(async () => controller.getUserFavorites()).rejects.toThrow(
-			'Get user favorites failed.'
+			`The user's favorites not found.`
 		)
 	})
 
@@ -103,7 +103,7 @@ describe('getUserFavorites controller', () => {
 describe('getUserListings controller', () => {
 	it('Should throw an APIError while trying to get user listings without providing userId', async () => {
 		await expect(async () => controller.getUserListings()).rejects.toThrow(
-			'Get user listings failed.'
+			`The user's listings not found.`
 		)
 	})
 
@@ -119,7 +119,7 @@ describe('getUserListings controller', () => {
 describe('getUserProfile controller', () => {
 	it('Should throw an APIError while trying to get user profile without providing userId', async () => {
 		await expect(async () => controller.getUserProfile()).rejects.toThrow(
-			'Get user profile failed.'
+			'The user not found.'
 		)
 	})
 
@@ -134,7 +134,7 @@ describe('getUserProfile controller', () => {
 describe('login controller', () => {
 	it('Should throw an APIError while trying to login without providing parameters', async () => {
 		await expect(async () => controller.login()).rejects.toThrow(
-			'Login failed.'
+			'You need to provide your credentials.'
 		)
 	})
 
@@ -152,7 +152,7 @@ describe('login controller', () => {
 describe('logout controller', () => {
 	it('Should throw an APIError while trying to end current session without providing parameters', async () => {
 		await expect(async () => controller.logout()).rejects.toThrow(
-			'Logout failed.'
+			'The user not found.'
 		)
 	})
 
@@ -167,7 +167,7 @@ describe('logout controller', () => {
 describe('logoutAll controller', () => {
 	it('Should throw an APIError while trying to end all sessions without providing the user object', async () => {
 		await expect(async () => controller.logoutAll()).rejects.toThrow(
-			'Logout all failed.'
+			'The user not found.'
 		)
 	})
 
@@ -183,7 +183,7 @@ describe('removeUser controller', () => {
 	it('Should throw an APIError while trying to remove an user with invalid id', async () => {
 		await expect(async () =>
 			controller.removeUser('5f785989e8421c13d422f934')
-		).rejects.toThrow('Remove user failed.')
+		).rejects.toThrow('The user not found.')
 	})
 
 	it('Should remove the user', async () => {
@@ -232,7 +232,7 @@ describe('updateUser controller', () => {
 	it('Should throw an APIError while trying to update an user with invalid id', async () => {
 		await expect(async () =>
 			controller.updateUser('5f785989e8421c13d422f934')
-		).rejects.toThrow('Update user failed.')
+		).rejects.toThrow('The user not found.')
 	})
 
 	it('Should update the user', async () => {

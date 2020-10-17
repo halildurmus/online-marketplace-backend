@@ -70,7 +70,7 @@ module.exports = {
 		const data = await service.getListings(match, sort, limit, skip)
 
 		if (!data) {
-			throw new APIError(500, `Get all listings failed.`)
+			throw new APIError(404, `The listings not found.`)
 		}
 
 		return data

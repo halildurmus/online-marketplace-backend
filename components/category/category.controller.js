@@ -6,7 +6,7 @@ module.exports = {
 		const data = await service.createCategory(params)
 
 		if (!data) {
-			throw new APIError(500, `Create category failed.`)
+			throw new APIError(404, `Invalid parent category!`)
 		}
 
 		return data
@@ -16,7 +16,7 @@ module.exports = {
 		const data = await service.getAllCategories()
 
 		if (!data) {
-			throw new APIError(500, `Get all categories failed.`)
+			throw new APIError(404, `The categories not found.`)
 		}
 
 		return data
@@ -26,7 +26,7 @@ module.exports = {
 		const data = await service.getCategories()
 
 		if (!data) {
-			throw new APIError(500, `Get categories failed.`)
+			throw new APIError(404, `The categories not found.`)
 		}
 
 		return data
