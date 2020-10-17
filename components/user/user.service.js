@@ -5,6 +5,10 @@ const redis = require('../../db/redis')
 
 module.exports = {
 	async createUser(params) {
+		if (!params) {
+			return
+		}
+
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const user = new User(params)
 		await user.save()
@@ -14,6 +18,10 @@ module.exports = {
 	},
 
 	async favoriteListing(userId, listingId) {
+		if (!userId || !listingId) {
+			return
+		}
+
 		if (await User.isFavoritedBefore(userId, listingId)) {
 			return
 		}
@@ -25,6 +33,10 @@ module.exports = {
 	},
 
 	async getUsers(match, sort, limit, skip) {
+		if (!match || !sort || !limit || !skip) {
+			return
+		}
+
 		const users = await User.find(match)
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))
@@ -39,6 +51,11 @@ module.exports = {
 
 	async getUserFavorites(userId) {
 		const user = await User.findById(userId)
+
+		if (!user) {
+			return
+		}
+
 		const favoriteIds = []
 
 		for (const key of user.favorites.keys()) {
@@ -50,6 +67,11 @@ module.exports = {
 
 	async getUserListings(userId) {
 		const user = await User.findById(userId)
+
+		if (!user) {
+			return
+		}
+
 		const listingIds = user.listings
 
 		return Listing.find({ _id: { $in: listingIds } })
@@ -66,6 +88,10 @@ module.exports = {
 	},
 
 	async login(params) {
+		if (!params) {
+			return
+		}
+
 		const user = await User.findByCredentials(params.email, params.password)
 		const token = await user.generateAuthToken()
 
@@ -73,12 +99,20 @@ module.exports = {
 	},
 
 	async logout(user, accessToken) {
+		if (!user || !accessToken) {
+			return
+		}
+
 		user.tokens = user.tokens.filter(({ token }) => token !== accessToken)
 
 		return await user.save()
 	},
 
 	async logoutAll(user) {
+		if (!user) {
+			return
+		}
+
 		user.tokens = []
 
 		return await user.save()
@@ -95,6 +129,10 @@ module.exports = {
 	},
 
 	async unfavoriteListing(userId, listingId) {
+		if (!userId || !listingId) {
+			return
+		}
+
 		if (!(await User.isFavoritedBefore(userId, listingId))) {
 			return
 		}

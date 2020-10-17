@@ -28,6 +28,12 @@ async function createUsers() {
 }
 
 describe('createUser service', () => {
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.createUser()
+
+		expect(res).toBeUndefined()
+	})
+
 	it('Should create an user', async () => {
 		const res = await service.createUser(user1)
 
@@ -45,6 +51,12 @@ describe('createUser service', () => {
 describe('favoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
+
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.favoriteListing()
+
+		expect(res).toBeUndefined()
+	})
 
 	it('Should return undefined if the listing favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
@@ -72,6 +84,12 @@ describe('favoriteListing service', () => {
 describe('getUsers service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
+
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.getUsers()
+
+		expect(res).toBeUndefined()
+	})
 
 	it('Should return empty array if no users found', async () => {
 		const users = await service.getUsers({}, {}, 0, 0)
@@ -149,6 +167,12 @@ describe('getUserFavorites service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.getUserFavorites()
+
+		expect(res).toBeUndefined()
+	})
+
 	it('Should return empty array if no favorites found', async () => {
 		const user = await service.createUser(user1)
 		const users = await service.getUserFavorites(user.user.id)
@@ -182,6 +206,12 @@ describe('getUserFavorites service', () => {
 describe('getUserListings service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
+
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.getUserListings()
+
+		expect(res).toBeUndefined()
+	})
 
 	it('Should return empty array if no listings found', async () => {
 		const user = await service.createUser(user1)
@@ -227,6 +257,12 @@ describe('getUserProfile service', () => {
 })
 
 describe('login service', () => {
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.login()
+
+		expect(res).toBeUndefined()
+	})
+
 	it('Should throw an APIError if the credentials is invalid', async () => {
 		await expect(
 			async () =>
@@ -250,6 +286,12 @@ describe('login service', () => {
 })
 
 describe('logout service', () => {
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.logout()
+
+		expect(res).toBeUndefined()
+	})
+
 	it('Should allow the user to end the current session', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
@@ -266,6 +308,12 @@ describe('logout service', () => {
 })
 
 describe('logoutAll service', () => {
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.logoutAll()
+
+		expect(res).toBeUndefined()
+	})
+
 	it('Should allow the user to end all sessions', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
@@ -299,6 +347,12 @@ describe('removeUser service', () => {
 describe('unfavoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
+
+	it('Should return undefined if the params are not provided', async () => {
+		const res = await service.unfavoriteListing()
+
+		expect(res).toBeUndefined()
+	})
 
 	it('Should return undefined if the listing is not favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
