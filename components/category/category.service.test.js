@@ -14,14 +14,6 @@ describe('createCategory service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should throw a ValidationError while creating a category without name', async () => {
-		await expect(
-			async () => await service.createCategory({ name: '' })
-		).rejects.toThrow(
-			'Category validation failed: name: Path `name` is required.'
-		)
-	})
-
 	it('Should create a category', async () => {
 		const category = await service.createCategory({ name: 'Gaming' })
 
