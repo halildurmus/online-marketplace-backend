@@ -27,7 +27,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with invalid title', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.title = 'Te'
 
@@ -45,7 +45,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with invalid description', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.description = 'Te'
 
@@ -63,7 +63,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with negative price value', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.price = -500
 
@@ -74,7 +74,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with invalid currency', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.currency = 'TRYY'
 
@@ -85,7 +85,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with invalid condition', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.condition = 'Test'
 
@@ -96,7 +96,7 @@ describe('Mongoose Schema Validation', () => {
 
 	it('Should throw a ValidationError while trying to create a listing with invalid location', async () => {
 		const user = await User.create(user1)
-		const listing = listing1
+		const listing = { ...listing1 }
 		listing.postedBy = user.id
 		listing.location = {
 			type: 'Test',
@@ -110,6 +110,9 @@ describe('Mongoose Schema Validation', () => {
 })
 
 describe('Mongoose Middleware', () => {
+	// Clears all test data after every test.
+	afterEach(async () => await dbHandler.clearDatabase())
+
 	it(`Should save listing's reference to the user who posted it`, async () => {
 		const user = await User.create(user1)
 		const listing = await Listing.create({ postedBy: user.id, ...listing1 })
