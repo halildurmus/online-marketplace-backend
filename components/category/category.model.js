@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const categorySchema = new Schema(
 	{
-		name: { type: String, required: true, minLength: 3, trim: true },
+		name: { type: String, required: true, minlength: 3, trim: true },
 		parent: { type: String, trim: true, default: '/' },
 		category: { type: String, trim: true },
 	},

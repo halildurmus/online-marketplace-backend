@@ -10,8 +10,20 @@ afterEach(async () => await dbHandler.clearDatabase())
 // Removes and closes the db and server.
 afterAll(async () => await dbHandler.closeDatabase())
 
-it('Should throw a ValidationError while creating a category without name', async () => {
-	await expect(async () => await Category.create({ name: '' })).rejects.toThrow(
-		'Category validation failed: name: Path `name` is required.'
-	)
+describe('Mongoose Schema Validation', () => {
+	it('Should throw a ValidationError while creating a category without name', async () => {
+		await expect(
+			async () => await Category.create({ name: '' })
+		).rejects.toThrow(
+			'Category validation failed: name: Path `name` is required.'
+		)
+	})
+
+	it('Should throw a ValidationError while trying to create a listing with invalid title', async () => {
+		await expect(
+			async () => await Category.create({ name: 'Te' })
+		).rejects.toThrow(
+			'Category validation failed: name: Path `name` (`Te`) is shorter than the minimum allowed length (3).'
+		)
+	})
 })
