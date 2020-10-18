@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const User = require('../user/user.model')
 
 const listingSchema = new Schema(
 	{
@@ -7,20 +8,26 @@ const listingSchema = new Schema(
 		title: {
 			type: String,
 			required: true,
-			minLength: 3,
-			maxLength: 70,
+			minlength: 3,
+			maxlength: 70,
 			trim: true,
 		},
 		description: {
 			type: String,
 			required: true,
-			minLength: 3,
-			maxLength: 1000,
+			minlength: 3,
+			maxlength: 1000,
 			trim: true,
 		},
 		category: { type: String, required: true },
 		price: { type: Number, required: true, min: 0, trim: true },
-		currency: { type: String, required: true, length: 3, trim: true },
+		currency: {
+			type: String,
+			required: true,
+			minlength: 3,
+			maxlength: 3,
+			trim: true,
+		},
 		photos: {
 			cover: { type: String, required: true },
 			photos: { type: [String], required: true },
@@ -68,7 +75,6 @@ listingSchema.pre('save', async function (next) {
 	// situation that every time someone favorited the listing, it constantly adds
 	// listing's reference to the user who posted it.
 	if (listing.isNew) {
-		const User = mongoose.model('User')
 		await User.findByIdAndUpdate(
 			listing.postedBy,
 			{ $push: { listings: listing._id } },
@@ -82,7 +88,6 @@ listingSchema.pre('save', async function (next) {
 // Remove listing's reference from the user who posted it.
 listingSchema.post('remove', async function (doc, next) {
 	const listing = doc
-	const User = mongoose.model('User')
 	await User.findByIdAndUpdate(
 		listing.postedBy,
 		{ $pull: { listings: listing._id } },
@@ -101,7 +106,6 @@ listingSchema.post('remove', async function (doc, next) {
 		const mod = { $unset: {} }
 		mod.$unset[key] = 1
 
-		const User = mongoose.model('User')
 		await User.updateMany(mod)
 	}
 
