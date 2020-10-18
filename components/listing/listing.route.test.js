@@ -15,9 +15,8 @@ const Listing = mongoose.model('Listing')
 const User = mongoose.model('User')
 const redis = require('../../db/redis')
 const request = require('supertest')
-// Dummy admin object.
+// Dummy objects.
 const admin = require('../user/dummies/admin.json')
-// Dummy listing objects.
 const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
 
@@ -77,10 +76,15 @@ describe('GET /listings', () => {
 
 describe('GET /listings/:id', () => {
 	it('Should respond with 404 if no listing found', async () => {
+		const mockRedisHincrby = jest
+			.spyOn(redis, 'hincrby')
+			.mockReturnValueOnce(true)
 		await request(app)
 			.get(`${process.env.API_PREFIX}/listings/5f785989e8421c13d422f934`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(404)
+
+		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should respond with an object containing the requested listing', async () => {

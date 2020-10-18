@@ -75,7 +75,7 @@ describe('getSubcategories controller', () => {
 	it('Should throw an APIError while trying to find the subcategories of a category with invalid id', async () => {
 		await expect(async () =>
 			controller.getSubcategories('5f785989e8421c13d422f934')
-		).rejects.toThrow('The subcategory not found.')
+		).rejects.toThrow('The category not found.')
 	})
 
 	it('Should find the subcategories of a category', async () => {

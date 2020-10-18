@@ -1,6 +1,6 @@
 const dbHandler = require('../../tests/db')
 const service = require('./listing.service')
-// Dummy listing objects.
+// Dummy objects.
 const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
 
@@ -34,10 +34,10 @@ describe('createListing service', () => {
 })
 
 describe('getListing service', () => {
-	it('Should return undefined if the listing not found', async () => {
-		const listing = await service.getListing('5f785989e8421c13d422f934')
-
-		expect(listing).toBeUndefined()
+	it('Should throw an APIError if the listing not found', async () => {
+		await expect(
+			async () => await service.getListing('5f785989e8421c13d422f934')
+		).rejects.toThrow('The listing not found')
 	})
 
 	it('Should return the listing', async () => {
@@ -126,10 +126,10 @@ describe('getListings service', () => {
 })
 
 describe('removeListing service', () => {
-	it('Should return undefined if no listing found', async () => {
-		const listing = await service.removeListing('5f785989e8421c13d422f934')
-
-		expect(listing).toBeUndefined()
+	it('Should throw an APIError if no listing found', async () => {
+		await expect(
+			async () => await service.removeListing('5f785989e8421c13d422f934')
+		).rejects.toThrow('The listing not found.')
 	})
 
 	it('Should remove the listing', async () => {
@@ -144,10 +144,10 @@ describe('removeListing service', () => {
 })
 
 describe('updateListing service', () => {
-	it('Should return undefined if no listing found', async () => {
-		const listing = await service.updateListing('5f785989e8421c13d422f934')
-
-		expect(listing).toBeUndefined()
+	it('Should throw an APIError if no listing found', async () => {
+		await expect(
+			async () => await service.updateListing('5f785989e8421c13d422f934')
+		).rejects.toThrow('The listing not found.')
 	})
 
 	it('Should update the listing', async () => {

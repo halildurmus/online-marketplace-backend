@@ -1,74 +1,31 @@
-const { APIError } = require('../../helpers')
 const service = require('./category.service')
 
 module.exports = {
 	async createCategory(params) {
-		const data = await service.createCategory(params)
-
-		if (!data) {
-			throw new APIError(404, `Invalid parent category!`)
-		}
-
-		return data
+		return await service.createCategory(params)
 	},
 
 	async getAllCategories() {
-		const data = await service.getAllCategories()
-
-		if (!data) {
-			throw new APIError(404, `The categories not found.`)
-		}
-
-		return data
+		return await service.getAllCategories()
 	},
 
 	async getCategories() {
-		const data = await service.getCategories()
-
-		if (!data) {
-			throw new APIError(404, `The categories not found.`)
-		}
-
-		return data
+		return await service.getCategories()
 	},
 
 	async getCategory(id) {
-		const data = await service.getCategory(id)
-
-		if (!data) {
-			throw new APIError(404, `The category not found.`)
-		}
-
-		return data
+		return await service.getCategory(id)
 	},
 
 	async getSubcategories(id) {
-		const data = await service.getSubcategories(id)
-
-		if (!data) {
-			throw new APIError(404, `The subcategory not found.`)
-		}
-
-		return data
+		return await service.getSubcategories(id)
 	},
 
 	async removeCategory(id) {
-		const data = await service.removeCategory(id)
-
-		if (!data) {
-			throw new APIError(404, 'The category not found.')
-		}
-
-		return data
+		return await service.removeCategory(id)
 	},
 
 	async updateCategory(id, params) {
-		const data = await service.updateCategory(id, params)
-
-		if (!data) {
-			throw new APIError(404, 'The category not found.')
-		}
-
-		return data
+		return await service.updateCategory(id, params)
 	},
 }

@@ -4,10 +4,9 @@ const { jwtSecretKey } = require('../../config')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
 const service = require('./user.service')
-// Dummy listing objects.
+// Dummy objects.
 const listing1 = require('../listing/dummies/listing1.json')
 const listing2 = require('../listing/dummies/listing2.json')
-// Dummy user objects.
 const admin = require('./dummies/admin.json')
 const user1 = require('./dummies/user1.json')
 const user2 = require('./dummies/user2.json')
@@ -28,12 +27,6 @@ async function createUsers() {
 }
 
 describe('createUser service', () => {
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.createUser()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should create an user', async () => {
 		const res = await service.createUser(user1)
 
@@ -52,21 +45,17 @@ describe('favoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.favoriteListing()
-
-		expect(res).toBeUndefined()
-	})
-
-	it('Should return undefined if the listing favorited before by the same user', async () => {
+	it('Should throw an APIError if the listing favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
 		const listing = await Listing.create({
 			postedBy: user.user.id,
 			...listing1,
 		})
 		await service.favoriteListing(user.user.id, listing.id)
-		const res = await service.favoriteListing(user.user.id, listing.id)
-		expect(res).toBeUndefined()
+
+		await expect(
+			async () => await service.favoriteListing(user.user.id, listing.id)
+		).rejects.toThrow('You can only favorite a listing once.')
 	})
 
 	it('Should favorite the listing', async () => {
@@ -161,12 +150,6 @@ describe('getUserFavorites service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.getUserFavorites()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should return empty array if no favorites found', async () => {
 		const user = await service.createUser(user1)
 		const users = await service.getUserFavorites(user.user.id)
@@ -201,12 +184,6 @@ describe('getUserListings service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.getUserListings()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should return empty array if no listings found', async () => {
 		const user = await service.createUser(user1)
 		const listings = await service.getUserListings(user.user.id)
@@ -236,10 +213,10 @@ describe('getUserListings service', () => {
 })
 
 describe('getUserProfile service', () => {
-	it('Should return undefined if the user not found', async () => {
-		const user = await service.getUserProfile('5f785989e8421c13d422f934')
-
-		expect(user).toBeUndefined()
+	it('Should throw an APIError if the user not found', async () => {
+		await expect(
+			async () => await service.getUserProfile('5f785989e8421c13d422f934')
+		).rejects.toThrow('The user not found.')
 	})
 
 	it('Should return the user profile', async () => {
@@ -251,12 +228,6 @@ describe('getUserProfile service', () => {
 })
 
 describe('login service', () => {
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.login()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should throw an APIError if the credentials is invalid', async () => {
 		await expect(
 			async () =>
@@ -280,12 +251,6 @@ describe('login service', () => {
 })
 
 describe('logout service', () => {
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.logout()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should allow the user to end the current session', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
@@ -302,12 +267,6 @@ describe('logout service', () => {
 })
 
 describe('logoutAll service', () => {
-	it('Should return undefined if the user object is not provided', async () => {
-		const res = await service.logoutAll()
-
-		expect(res).toBeUndefined()
-	})
-
 	it('Should allow the user to end all sessions', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
@@ -324,10 +283,10 @@ describe('logoutAll service', () => {
 })
 
 describe('removeUser service', () => {
-	it('Should return undefined if the user not found', async () => {
-		const res = await service.removeUser('5f785989e8421c13d422f934')
-
-		expect(res).toBeUndefined()
+	it('Should throw an APIError if the user not found', async () => {
+		await expect(
+			async () => await service.removeUser('5f785989e8421c13d422f934')
+		).rejects.toThrow('The user not found.')
 	})
 
 	it('Should remove the user', async () => {
@@ -342,20 +301,18 @@ describe('unfavoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should return undefined if the params are not provided', async () => {
-		const res = await service.unfavoriteListing()
-
-		expect(res).toBeUndefined()
-	})
-
-	it('Should return undefined if the listing is not favorited before by the same user', async () => {
+	it('Should throw an APIError if the listing is not favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
 		const listing = await Listing.create({
 			postedBy: user.user.id,
 			...listing1,
 		})
-		const res = await service.unfavoriteListing(user.user.id, listing.id)
-		expect(res).toBeUndefined()
+
+		await expect(
+			async () => await service.unfavoriteListing(user.user.id, listing.id)
+		).rejects.toThrow(
+			'You cannot unfavorite a listing that you have never favorited before.'
+		)
 	})
 
 	it('Should unfavorite the listing', async () => {
@@ -383,10 +340,10 @@ describe('unfavoriteListing service', () => {
 })
 
 describe('updateUser service', () => {
-	it('Should return undefined if no user found', async () => {
-		const user = await service.updateUser('5f785989e8421c13d422f934', {})
-
-		expect(user).toBeUndefined()
+	it('Should throw an APIError if no user found', async () => {
+		await expect(
+			async () => await service.updateUser('5f785989e8421c13d422f934')
+		).rejects.toThrow('The user not found.')
 	})
 
 	it('Should update the user', async () => {

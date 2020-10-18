@@ -1,7 +1,7 @@
 const dbHandler = require('../../tests/db')
 const controller = require('./listing.controller')
 const redis = require('../../db/redis')
-// Dummy listing objects.
+// Dummy objects.
 const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
 
@@ -15,6 +15,12 @@ afterEach(async () => await dbHandler.clearDatabase())
 afterAll(async () => await dbHandler.closeDatabase())
 
 describe('createListing controller', () => {
+	it('Should throw an APIError while creating a listing without parameters', async () => {
+		await expect(async () => await controller.createListing()).rejects.toThrow(
+			'You need to provide userId and listing params.'
+		)
+	})
+
 	it('Should create a listing', async () => {
 		const listing = await controller.createListing(
 			'5f785989e8421c13d422f934',
@@ -27,9 +33,14 @@ describe('createListing controller', () => {
 
 describe('getListing controller', () => {
 	it('Should throw an APIError while trying to find a listing with invalid id', async () => {
+		const mockRedisHincrby = jest
+			.spyOn(redis, 'hincrby')
+			.mockReturnValueOnce(true)
+
 		await expect(
 			async () => await controller.getListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')
+		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should find the listing', async () => {

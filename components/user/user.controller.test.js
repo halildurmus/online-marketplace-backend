@@ -3,9 +3,8 @@ const controller = require('./user.controller')
 const Listing = require('../listing/listing.model')
 const redis = require('../../db/redis')
 const User = require('./user.model')
-// Dummy listing objects.
+// Dummy objects.
 const listing1 = require('../listing/dummies/listing1.json')
-// Dummy user objects.
 const admin = require('./dummies/admin.json')
 const user1 = require('./dummies/user1.json')
 
@@ -19,6 +18,12 @@ afterEach(async () => await dbHandler.clearDatabase())
 afterAll(async () => await dbHandler.closeDatabase())
 
 describe('createUser controller', () => {
+	it('Should throw an APIError while creating a user without parameters', async () => {
+		await expect(async () => await controller.createUser()).rejects.toThrow(
+			'You need to provide the required parameters.'
+		)
+	})
+
 	it('Should create an user', async () => {
 		const user = await controller.createUser(user1)
 
@@ -27,6 +32,12 @@ describe('createUser controller', () => {
 })
 
 describe('favoriteListing controller', () => {
+	it('Should throw an APIError while trying to favorite a listing without parameters', async () => {
+		await expect(
+			async () => await controller.favoriteListing()
+		).rejects.toThrow('You need to provide userId and listingId.')
+	})
+
 	it('Should throw an APIError while trying to favorite a listing twice', async () => {
 		const mockRedisHincrby = jest
 			.spyOn(redis, 'hincrby')
@@ -82,7 +93,7 @@ describe('getUsers controller', () => {
 describe('getUserFavorites controller', () => {
 	it('Should throw an APIError while trying to get user favorites without providing userId', async () => {
 		await expect(async () => controller.getUserFavorites()).rejects.toThrow(
-			`The user's favorites not found.`
+			`The user not found.`
 		)
 	})
 
@@ -103,7 +114,7 @@ describe('getUserFavorites controller', () => {
 describe('getUserListings controller', () => {
 	it('Should throw an APIError while trying to get user listings without providing userId', async () => {
 		await expect(async () => controller.getUserListings()).rejects.toThrow(
-			`The user's listings not found.`
+			`The user not found.`
 		)
 	})
 
@@ -152,7 +163,7 @@ describe('login controller', () => {
 describe('logout controller', () => {
 	it('Should throw an APIError while trying to end current session without providing parameters', async () => {
 		await expect(async () => controller.logout()).rejects.toThrow(
-			'The user not found.'
+			'You need to provide user object and accessToken.'
 		)
 	})
 
@@ -167,7 +178,7 @@ describe('logout controller', () => {
 describe('logoutAll controller', () => {
 	it('Should throw an APIError while trying to end all sessions without providing the user object', async () => {
 		await expect(async () => controller.logoutAll()).rejects.toThrow(
-			'The user not found.'
+			'You need to provide user object.'
 		)
 	})
 
@@ -195,7 +206,16 @@ describe('removeUser controller', () => {
 })
 
 describe('unfavoriteListing controller', () => {
+	it('Should throw an APIError while trying to unfavorite a listing without parameters', async () => {
+		await expect(
+			async () => await controller.unfavoriteListing()
+		).rejects.toThrow('You need to provide userId and listingId.')
+	})
+
 	it('Should throw an APIError while trying to unfavorite a listing that never been favorited before', async () => {
+		const mockRedisHincrby = jest
+			.spyOn(redis, 'hincrby')
+			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({
 			postedBy: user.id,
@@ -207,6 +227,7 @@ describe('unfavoriteListing controller', () => {
 		).rejects.toThrow(
 			'You cannot unfavorite a listing that you have never favorited before.'
 		)
+		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should unfavorite the listing', async () => {

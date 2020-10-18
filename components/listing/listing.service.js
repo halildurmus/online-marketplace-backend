@@ -1,26 +1,22 @@
+const { APIError } = require('../../helpers')
 const { date } = require('../../utils')
 const Listing = require('./listing.model')
 const redis = require('../../db/redis')
 
 module.exports = {
 	async createListing(userId, params) {
-		if (!userId || !params) {
-			return
-		}
-
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const listing = new Listing(params)
 		listing.postedBy = userId
-		await listing.save()
 
-		return listing
+		return await listing.save()
 	},
 
 	async getListing(id) {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			return
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		listing.views += 1
@@ -29,23 +25,17 @@ module.exports = {
 	},
 
 	async getListings(match, sort, limit, skip) {
-		const listings = await Listing.find(match)
+		return Listing.find(match)
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))
 			.sort(sort)
-
-		if (!listings) {
-			return
-		}
-
-		return listings
 	},
 
 	async removeListing(id) {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			return
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		return await listing.remove()
@@ -55,7 +45,7 @@ module.exports = {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			return
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		const updates = Object.keys(params)

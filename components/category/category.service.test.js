@@ -118,10 +118,10 @@ describe('getCategories service', () => {
 })
 
 describe('getCategory service', () => {
-	it('Should return undefined if no category found', async () => {
-		const category = await service.getCategory('5f785989e8421c13d422f934')
-
-		expect(category).toBeUndefined()
+	it('Should throw an APIError if no category found', async () => {
+		await expect(
+			async () => await service.getCategory('5f785989e8421c13d422f934')
+		).rejects.toThrow('The category not found.')
 	})
 
 	it('Should find the category', async () => {
@@ -133,10 +133,18 @@ describe('getCategory service', () => {
 })
 
 describe('getSubcategories service', () => {
-	it('Should return undefined if no category found', async () => {
-		const category = await service.getSubcategories('5f785989e8421c13d422f934')
+	it('Should throw an APIError if no category found', async () => {
+		await expect(
+			async () => await service.getSubcategories('5f785989e8421c13d422f934')
+		).rejects.toThrow('The category not found.')
+	})
 
-		expect(category).toBeUndefined()
+	it('Should return empty array if no subcategory found', async () => {
+		const category = await service.createCategory({ name: 'Gaming' })
+		const subcategories = await service.getSubcategories(category.id)
+
+		expect(Array.isArray(subcategories)).toBeTruthy()
+		expect(subcategories).toHaveLength(0)
 	})
 
 	it('Should find the subcategories of a category', async () => {
@@ -167,10 +175,10 @@ describe('getSubcategories service', () => {
 })
 
 describe('removeCategory service', () => {
-	it('Should return undefined if no category found', async () => {
-		const category = await service.removeCategory('5f785989e8421c13d422f934')
-
-		expect(category).toBeUndefined()
+	it('Should throw an APIError if no category found', async () => {
+		await expect(
+			async () => await service.removeCategory('5f785989e8421c13d422f934')
+		).rejects.toThrow('The category not found.')
 	})
 
 	it('Should remove the categories', async () => {
@@ -188,10 +196,10 @@ describe('removeCategory service', () => {
 })
 
 describe('updateCategory service', () => {
-	it('Should return undefined if no category found', async () => {
-		const category = await service.updateCategory('5f785989e8421c13d422f934')
-
-		expect(category).toBeUndefined()
+	it('Should throw an APIError if no category found', async () => {
+		await expect(
+			async () => await service.updateCategory('5f785989e8421c13d422f934')
+		).rejects.toThrow('The category not found.')
 	})
 
 	it('Should update the categories', async () => {

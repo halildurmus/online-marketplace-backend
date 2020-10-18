@@ -3,25 +3,17 @@ const service = require('./listing.service')
 
 module.exports = {
 	async createListing(userId, params) {
-		const data = await service.createListing(userId, params)
-
-		if (!data) {
+		if (!userId || !params) {
 			throw new APIError(400, `You need to provide userId and listing params.`)
 		}
 
-		return data
+		return await service.createListing(userId, params)
 	},
 
 	async getListing(id) {
-		const data = await service.getListing(id)
-
-		if (!data) {
-			throw new APIError(404, 'The listing not found.')
-		}
-
 		await service.updateViewsCounter(id)
 
-		return data
+		return await service.getListing(id)
 	},
 
 	async getListings(params) {
@@ -67,32 +59,14 @@ module.exports = {
 				: 1
 		}
 
-		const data = await service.getListings(match, sort, limit, skip)
-
-		if (!data) {
-			throw new APIError(404, `The listings not found.`)
-		}
-
-		return data
+		return await service.getListings(match, sort, limit, skip)
 	},
 
 	async removeListing(id) {
-		const data = await service.removeListing(id)
-
-		if (!data) {
-			throw new APIError(404, 'The listing not found.')
-		}
-
-		return data
+		return await service.removeListing(id)
 	},
 
 	async updateListing(id, params) {
-		const data = await service.updateListing(id, params)
-
-		if (!data) {
-			throw new APIError(404, 'The listing not found.')
-		}
-
-		return data
+		return await service.updateListing(id, params)
 	},
 }

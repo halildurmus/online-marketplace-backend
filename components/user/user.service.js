@@ -1,3 +1,4 @@
+const { APIError } = require('../../helpers')
 const { date } = require('../../utils')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
@@ -5,10 +6,6 @@ const redis = require('../../db/redis')
 
 module.exports = {
 	async createUser(params) {
-		if (!params) {
-			return
-		}
-
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const user = new User(params)
 		await user.save()
@@ -18,18 +15,14 @@ module.exports = {
 	},
 
 	async favoriteListing(userId, listingId) {
-		if (!userId || !listingId) {
-			return
-		}
-
 		const listing = await Listing.findById(listingId)
 
 		if (!listing) {
-			return
+			throw new APIError(400, 'The listing not found.')
 		}
 
 		if (await User.isFavoritedBefore(userId, listingId)) {
-			return
+			throw new APIError(400, 'You can only favorite a listing once.')
 		}
 
 		const user = await User.findById(userId)
@@ -39,23 +32,17 @@ module.exports = {
 	},
 
 	async getUsers(match = {}, sort = {}, limit = 0, skip = 0) {
-		const users = await User.find(match)
+		return User.find(match)
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))
 			.sort(sort)
-
-		if (!users) {
-			return
-		}
-
-		return users
 	},
 
 	async getUserFavorites(userId) {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return
+			throw new APIError(404, `The user not found.`)
 		}
 
 		const favoriteIds = []
@@ -71,7 +58,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return
+			throw new APIError(404, `The user not found.`)
 		}
 
 		const listingIds = user.listings
@@ -83,17 +70,13 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return
+			throw new APIError(404, `The user not found.`)
 		}
 
 		return user
 	},
 
 	async login(params) {
-		if (!params) {
-			return
-		}
-
 		const user = await User.findByCredentials(params.email, params.password)
 		const token = await user.generateAuthToken()
 
@@ -101,20 +84,12 @@ module.exports = {
 	},
 
 	async logout(user, accessToken) {
-		if (!user || !accessToken) {
-			return
-		}
-
 		user.tokens = user.tokens.filter(({ token }) => token !== accessToken)
 
 		return await user.save()
 	},
 
 	async logoutAll(user) {
-		if (!user) {
-			return
-		}
-
 		user.tokens = []
 
 		return await user.save()
@@ -124,25 +99,24 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return
+			throw new APIError(404, 'The user not found.')
 		}
 
 		return await user.remove()
 	},
 
 	async unfavoriteListing(userId, listingId) {
-		if (!userId || !listingId) {
-			return
-		}
-
 		const listing = await Listing.findById(listingId)
 
 		if (!listing) {
-			return
+			throw new APIError(404, 'The listing not found.')
 		}
 
 		if (!(await User.isFavoritedBefore(userId, listingId))) {
-			return
+			throw new APIError(
+				400,
+				'You cannot unfavorite a listing that you have never favorited before.'
+			)
 		}
 
 		const key = `favorites.${listingId}`
@@ -164,7 +138,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return
+			throw new APIError(404, 'The user not found.')
 		}
 
 		const updates = Object.keys(params)
