@@ -41,8 +41,6 @@ module.exports.grantAccess = (action, resource) => {
 				!req.user.listings.includes(req.params.id)
 			) {
 				throw error
-			} else if (resource === 'profile' && req.user.id !== req.params.id) {
-				throw error
 			}
 		}
 

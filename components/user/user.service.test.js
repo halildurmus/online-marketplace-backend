@@ -232,8 +232,8 @@ describe('login service', () => {
 		await expect(
 			async () =>
 				await service.login({
-					email: 'test@gmail.com',
-					password: 'Test1234',
+					email: user1.email,
+					password: user1.password,
 				})
 		).rejects.toThrow('Invalid credentials.')
 	})
@@ -241,8 +241,8 @@ describe('login service', () => {
 	it('Should allow the user to login', async () => {
 		await service.createUser(user1)
 		const res = await service.login({
-			email: 'user1@gmail.com',
-			password: 'Test1234',
+			email: user1.email,
+			password: user1.password,
 		})
 
 		expect(res.user.email).toBe(user1.email)
@@ -254,8 +254,8 @@ describe('logout service', () => {
 	it('Should allow the user to end the current session', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
-			email: 'user1@gmail.com',
-			password: 'Test1234',
+			email: user1.email,
+			password: user1.password,
 		})
 
 		expect(user.user.tokens).toHaveLength(2)
@@ -270,8 +270,8 @@ describe('logoutAll service', () => {
 	it('Should allow the user to end all sessions', async () => {
 		await service.createUser(user1)
 		const user = await service.login({
-			email: 'user1@gmail.com',
-			password: 'Test1234',
+			email: user1.email,
+			password: user1.password,
 		})
 
 		expect(user.user.tokens).toHaveLength(2)
