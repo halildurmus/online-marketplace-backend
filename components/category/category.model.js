@@ -6,6 +6,8 @@ const categorySchema = new Schema(
 		name: { type: String, required: true, minlength: 3, trim: true },
 		parent: { type: String, trim: true, default: '/' },
 		category: { type: String, trim: true },
+		color: { type: String, trim: true, required: true },
+		icon: { type: String, trim: true, required: true },
 	},
 	{
 		timestamps: true,
