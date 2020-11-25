@@ -1,5 +1,6 @@
 const { APIError } = require('../../helpers')
 const { date } = require('../../utils')
+const { redisKeyUploadAccessToken } = require('../../config')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
 const redis = require('../../db/redis')
@@ -9,9 +10,8 @@ module.exports = {
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const user = new User(params)
 		await user.save()
-		const token = await user.generateAuthToken()
 
-		return { user, token }
+		return user
 	},
 
 	async favoriteListing(userId, listingId) {
@@ -66,33 +66,14 @@ module.exports = {
 		return Listing.find({ _id: { $in: listingIds } })
 	},
 
-	async getUserProfile(userId) {
-		const user = await User.findById(userId)
+	async getUserProfile(id) {
+		const user = await User.findById(id)
 
 		if (!user) {
 			throw new APIError(404, `The user not found.`)
 		}
 
 		return user
-	},
-
-	async login(params) {
-		const user = await User.findByCredentials(params.email, params.password)
-		const token = await user.generateAuthToken()
-
-		return { user, token }
-	},
-
-	async logout(user, accessToken) {
-		user.tokens = user.tokens.filter(({ token }) => token !== accessToken)
-
-		return await user.save()
-	},
-
-	async logoutAll(user) {
-		user.tokens = []
-
-		return await user.save()
 	},
 
 	async removeUser(userId) {

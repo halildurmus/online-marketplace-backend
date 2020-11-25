@@ -1,9 +1,8 @@
 const { APIError } = require('../helpers')
 const catchAsync = require('./catchAsync')
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../config')
 const { roles, text } = require('../utils')
 const User = require('../components/user/user.model')
+const admin = require('firebase-admin')
 
 module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 	let token = req.header('Authorization')
@@ -14,14 +13,18 @@ module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 
 	token = text.parseAuthToken(token)
 
-	const decoded = jwt.verify(token, jwtSecretKey)
-	const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
+	const decoded = await admin.auth().verifyIdToken(token)
+
+	if (!decoded) {
+		throw new APIError(401, 'Invalid authorization token.')
+	}
+
+	const user = await User.findOne({ uid: decoded.user_id })
 
 	if (!user) {
 		throw new APIError(401, 'Invalid authorization token.')
 	}
 
-	req.token = token
 	req.user = user
 	next()
 })

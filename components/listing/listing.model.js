@@ -32,7 +32,7 @@ const listingSchema = new Schema(
 			cover: { type: String, required: true },
 			photos: { type: [String], required: true },
 		},
-		videos: { type: [String] },
+		video: { type: String },
 		condition: {
 			type: String,
 			enum: ['new', 'like new', 'good', 'fair', 'poor'],

@@ -16,6 +16,7 @@
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "firebase-admin": "^9.4.1",
     "http-status": "^1.4.2",
     "ioredis": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
@@ -38,7 +39,7 @@
     "mockingoose": "^2.13.2",
     "mongodb-memory-server": "^6.9.0",
     "node-mocks-http": "^1.9.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
     "supertest": "^4.0.2"
   }

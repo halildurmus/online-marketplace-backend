@@ -6,45 +6,15 @@ const { isValidOperation } = require('./user.middleware')
 const {
 	createUser,
 	favoriteListing,
+	getUploadAccessToken,
 	getUsers,
 	getUserFavorites,
 	getUserListings,
 	getUserProfile,
-	login,
-	logout,
-	logoutAll,
 	removeUser,
 	unfavoriteListing,
 	updateUser,
 } = require('./user.controller')
-
-router.post(
-	'/auth/login',
-	isRequestBodyBlank,
-	catchAsync(async (req, res) => {
-		res.json(await login(req.body))
-	})
-)
-
-router.post(
-	'/auth/logout',
-	allowIfLoggedIn,
-	catchAsync(async (req, res) => {
-		req.user.tokens = req.user.tokens.filter((token) => {
-			return token.token !== req.token
-		})
-		res.json(await logout(req.user, req.token))
-	})
-)
-
-router.post(
-	'/auth/logout-all',
-	allowIfLoggedIn,
-	catchAsync(async (req, res) => {
-		req.user.tokens = []
-		res.json(await logoutAll(req.user))
-	})
-)
 
 router.post(
 	'/auth/register',

@@ -57,37 +57,6 @@ module.exports = {
 		return await service.getUserProfile(userId)
 	},
 
-	async login(params) {
-		if (!params) {
-			throw new APIError(400, `You need to provide your credentials.`)
-		}
-
-		return await service.login(params)
-	},
-
-	async logout(user, accessToken) {
-		if (!user || !accessToken) {
-			throw new APIError(
-				400,
-				'You need to provide user object and accessToken.'
-			)
-		}
-
-		await service.logout(user, accessToken)
-
-		return { message: 'Logout successful.' }
-	},
-
-	async logoutAll(user) {
-		if (!user) {
-			throw new APIError(400, 'You need to provide user object.')
-		}
-
-		await service.logoutAll(user)
-
-		return { message: 'Logout all successful.' }
-	},
-
 	async removeUser(userId) {
 		return await service.removeUser(userId)
 	},

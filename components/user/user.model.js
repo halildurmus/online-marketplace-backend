@@ -1,15 +1,21 @@
-const { APIError } = require('../../helpers')
-const bcrypt = require('bcrypt')
-const { isEmail, isURL, matches } = require('validator')
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../../config')
+const { isEmail, isMobilePhone, isURL } = require('validator')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema(
 	{
-		firstName: { type: String, required: true, minLength: 3, trim: true },
-		lastName: { type: String, required: true, minLength: 3, trim: true },
+		uid: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		displayName: {
+			type: String,
+			required: true,
+			minlength: 3,
+			maxlength: 25,
+			trim: true,
+		},
 		email: {
 			type: String,
 			unique: true,
@@ -18,21 +24,30 @@ const userSchema = new Schema(
 			lowercase: true,
 			validate: { validator: isEmail, msg: 'Invalid email address.' },
 		},
-		password: {
+		phone: {
 			type: String,
-			required: true,
+			index: true,
+			unique: true,
+			sparse: true,
 			trim: true,
 			validate(value) {
-				const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
-
-				if (!matches(value, pattern)) {
-					throw new Error('')
+				if (!isMobilePhone(value, 'any', { strictMode: true })) {
+					throw new Error('Invalid phone number.')
 				}
-
-				// TODO: Validate using a blacklisted passwords list.
-				if (value.toLowerCase().includes('password')) {
-					throw new Error('Password cannot contain "password".')
-				}
+			},
+		},
+		socials: {
+			facebook: {
+				id: { type: String, index: true, unique: true, sparse: true },
+				token: String,
+			},
+			google: {
+				id: { type: String, index: true, unique: true, sparse: true },
+				token: String,
+			},
+			twitter: {
+				id: { type: String, index: true, unique: true, sparse: true },
+				token: String,
 			},
 		},
 		avatar: {
@@ -45,7 +60,7 @@ const userSchema = new Schema(
 				}
 			},
 		},
-		bio: { type: String, trim: true, maxLength: 150, default: '' },
+		bio: { type: String, trim: true, maxlength: 150 },
 		location: {
 			type: {
 				type: String,
@@ -64,7 +79,6 @@ const userSchema = new Schema(
 		},
 		favorites: { type: Map, of: String, default: {} },
 		listings: [{ type: mongoose.Types.ObjectId, ref: 'Listing' }],
-		tokens: [{ token: { type: String, required: true } }],
 	},
 	{
 		timestamps: true,
@@ -74,10 +88,7 @@ const userSchema = new Schema(
 			transform: (doc, ret) => {
 				delete ret._id
 				delete ret.createdAt
-				delete ret.hash
-				delete ret.password
 				delete ret.role
-				delete ret.tokens
 				delete ret.updatedAt
 			},
 		},
@@ -86,49 +97,11 @@ const userSchema = new Schema(
 
 userSchema.index({ location: '2dsphere' })
 
-userSchema.methods.generateAuthToken = async function () {
-	const user = this
-	const token = jwt.sign({ _id: user._id.toString() }, jwtSecretKey, {
-		expiresIn: '24h',
-	})
-	user.tokens = user.tokens.concat({ token })
-	await user.save()
-
-	return token
-}
-
-userSchema.statics.findByCredentials = async (email, password) => {
-	const user = await User.findOne({ email })
-
-	if (!user) {
-		throw new APIError(401, 'Invalid credentials.')
-	}
-
-	const isMatch = await bcrypt.compare(password, user.password)
-
-	if (!isMatch) {
-		throw new APIError(401, 'Invalid credentials.')
-	}
-
-	return user
-}
-
 userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
 	const user = await User.findById(userId)
 
 	return user.favorites.get(listingId) === 'true'
 }
-
-// Hash the plain text password before saving.
-userSchema.pre('save', async function (next) {
-	const user = this
-
-	if (user.isModified('password')) {
-		user.password = await bcrypt.hash(user.password, 8)
-	}
-
-	next()
-})
 
 // Remove user's listing's and references.
 userSchema.post('remove', async function (doc, next) {
