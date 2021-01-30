@@ -7,8 +7,12 @@ const {
 	createListing,
 	getListing,
 	getListings,
+	getSoldListings,
 	removeListing,
+	searchListings,
+	searchListingsByKeywords,
 	updateListing,
+	updateViewsCounter,
 } = require('./listing.controller')
 
 router.get(
@@ -16,6 +20,30 @@ router.get(
 	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(await getListings(req.query))
+	})
+)
+
+router.get(
+	'/listings/sold',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await getSoldListings(req.query))
+	})
+)
+
+router.get(
+	'/listings/search',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await searchListings(req.query))
+	})
+)
+
+router.get(
+	'/listings/search-by-keywords',
+	// allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await searchListingsByKeywords(req.query))
 	})
 )
 
@@ -45,6 +73,15 @@ router.patch(
 	isValidOperation,
 	catchAsync(async (req, res) => {
 		res.json(await updateListing(req.params.id, req.body))
+	})
+)
+
+router.patch(
+	'/listings/:id/increment-views',
+	allowIfLoggedIn,
+	isRequestBodyBlank,
+	catchAsync(async (req, res) => {
+		res.json(await updateViewsCounter(req.params.id))
 	})
 )
 

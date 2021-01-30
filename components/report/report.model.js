@@ -6,11 +6,11 @@ const userSubjects = require('./user-subjects')
 
 const reportSchema = new Schema(
 	{
-		reporter: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-		reportedListing: { type: mongoose.Types.ObjectId, ref: 'Listing' },
-		reportedUser: { type: mongoose.Types.ObjectId, ref: 'User' },
+		reporter: { type: String, ref: 'User', required: true },
+		reportedListing: { type: String, ref: 'Listing' },
+		reportedUser: { type: String, ref: 'User' },
 		subject: { type: Number, required: true },
-		message: { type: String },
+		message: { type: String, maxlength: 300 },
 	},
 	{
 		timestamps: true,

@@ -8,14 +8,15 @@ module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 
 	const updates = Object.keys(req.body)
 	const allowedUpdates = [
+		'isSold',
+		'boughtBy',
 		'category',
 		'condition',
-		'currency',
 		'description',
+		'location',
 		'photos',
 		'price',
 		'title',
-		'videos',
 	]
 	const isValidOperation = updates.every((update) =>
 		allowedUpdates.includes(update)

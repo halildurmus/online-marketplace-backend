@@ -1,7 +1,7 @@
 const { APIError } = require('../../helpers')
-const { date } = require('../../utils')
 const Listing = require('./listing.model')
-const redis = require('../../db/redis')
+const { Client } = require('@elastic/elasticsearch')
+const client = new Client({ node: 'http://35.198.111.64:9200' })
 
 module.exports = {
 	async createListing(userId, params) {
@@ -31,6 +31,34 @@ module.exports = {
 			.sort(sort)
 	},
 
+	async getSoldListings(match, limit, skip) {
+		return Listing.find(match).limit(parseInt(limit)).skip(parseInt(skip))
+	},
+
+	async searchListings(query) {
+		const results = await client.search({
+			index: 'listings',
+			body: {
+				suggest: {
+					'listing-suggest-fuzzy': {
+						prefix: query,
+						completion: {
+							field: 'title',
+						},
+					},
+				},
+			},
+		})
+
+		return results.body.suggest['listing-suggest-fuzzy'][0].options
+	},
+
+	async searchListingsByKeywords(query) {
+		return Listing.find({
+			$text: { $search: new RegExp(query, 'i') },
+		})
+	},
+
 	async removeListing(id) {
 		const listing = await Listing.findById(id)
 
@@ -51,10 +79,11 @@ module.exports = {
 		const updates = Object.keys(params)
 		updates.forEach((update) => (listing[update] = params[update]))
 
-		return await listing.save()
+		return listing.save()
 	},
 
 	async updateViewsCounter(id) {
-		return redis.hincrby(`views_${date.getFormattedDate(new Date())}`, id, 1)
+		return Listing.findByIdAndUpdate(id, { $inc: { views: 1 } }, { new: true })
+		// return redis.hincrby(`views_${date.getFormattedDate(new Date())}`, id, 1)
 	},
 }

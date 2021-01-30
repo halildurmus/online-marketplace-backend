@@ -16,8 +16,12 @@ module.exports = {
 		return await service.getListing(id)
 	},
 
+	async updateViewsCounter(id) {
+		return await service.updateViewsCounter(id)
+	},
+
 	async getListings(params) {
-		const match = {}
+		const match = { isSold: false }
 		const sort = {}
 		const limit = params.limit || 0
 		const skip = params.skip || 0
@@ -27,7 +31,19 @@ module.exports = {
 		}
 
 		if (params.condition) {
-			match.condition = params.condition.toLowerCase()
+			match.condition = params.condition
+		}
+
+		if (params.lat && params.long && params.radius) {
+			match.location = {
+				$nearSphere: {
+					$geometry: {
+						type: 'Point',
+						coordinates: [params.lat, params.long],
+					},
+					$maxDistance: params.radius * 1000,
+				},
+			}
 		}
 
 		if (params.postedWithin) {
@@ -60,6 +76,30 @@ module.exports = {
 		}
 
 		return await service.getListings(match, sort, limit, skip)
+	},
+
+	async getSoldListings(params) {
+		const match = { isSold: true }
+		const limit = params.limit || 0
+		const skip = params.skip || 0
+
+		return await service.getSoldListings(match, limit, skip)
+	},
+
+	async searchListings(params) {
+		if (!params.query) {
+			return
+		}
+
+		return await service.searchListings(params.query)
+	},
+
+	async searchListingsByKeywords(params) {
+		if (!params.query) {
+			return
+		}
+
+		return await service.searchListingsByKeywords(params.query)
 	},
 
 	async removeListing(id) {
