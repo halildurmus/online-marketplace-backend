@@ -1,14 +1,16 @@
-const { isEmail, isMobilePhone, isURL } = require('validator')
+const { isEmail, isMobilePhone } = require('validator')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const { nanoid } = require('nanoid')
+const { androidPackageName, firebaseWebApiKey } = require('../../config')
+const got = require('got')
 
 const userSchema = new Schema(
 	{
-		uid: {
-			type: String,
-			required: true,
-			trim: true,
-		},
+		_id: { type: String, default: () => nanoid(10) },
+		shareURL: { type: String, default: '' },
+		reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+		uid: { type: String, required: true, trim: true },
 		displayName: {
 			type: String,
 			required: true,
@@ -45,40 +47,21 @@ const userSchema = new Schema(
 				id: { type: String, index: true, unique: true, sparse: true },
 				token: String,
 			},
-			twitter: {
-				id: { type: String, index: true, unique: true, sparse: true },
-				token: String,
-			},
 		},
-		avatar: {
-			type: String,
-			trim: true,
-			default: 'https://gravatar.com/avatar',
-			validate(value) {
-				if (!isURL(value, { require_protocol: true })) {
-					throw new Error('Invalid avatar url.')
-				}
-			},
-		},
+		avatar: { type: String, trim: true, default: '' },
 		bio: { type: String, trim: true, maxlength: 150 },
 		location: {
-			type: {
-				type: String,
-				enum: ['Point'],
-				required: true,
-			},
-			coordinates: {
-				type: [Number],
-				required: true,
-			},
+			type: { type: String, enum: ['Point'], required: true },
+			coordinates: { type: [Number], required: true },
+			address: String,
+			city: String,
+			countryCode: String,
+			postalCode: String,
 		},
-		role: {
-			type: String,
-			enum: ['admin', 'user'],
-			default: 'user',
-		},
+		role: { type: String, enum: ['admin', 'user'], default: 'user' },
 		favorites: { type: Map, of: String, default: {} },
-		listings: [{ type: mongoose.Types.ObjectId, ref: 'Listing' }],
+		listings: [{ type: String, ref: 'Listing' }],
+		blockedUsers: [{ type: String, ref: 'User' }],
 	},
 	{
 		timestamps: true,
@@ -102,6 +85,42 @@ userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
 
 	return user.favorites.get(listingId) === 'true'
 }
+
+const generateUserShareUrl = async (userId) => {
+	const response = await got.post(
+		`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${firebaseWebApiKey}`,
+		{
+			json: {
+				dynamicLinkInfo: {
+					domainUriPrefix: 'https://codingwithflutter.page.link',
+					link: `https://codingwithflutter.page.link/user?id=${userId}`,
+					androidInfo: {
+						androidPackageName,
+					},
+				},
+				suffix: {
+					option: 'SHORT',
+				},
+			},
+			responseType: 'json',
+		}
+	)
+
+	if (response.statusCode === 200) {
+		return response.body.shortLink
+	}
+}
+
+// Generate a share URL for the user's profile and save it.
+userSchema.pre('save', async function (next) {
+	const user = this
+
+	if (user.isNew) {
+		user.shareURL = await generateUserShareUrl(user._id)
+	}
+
+	next()
+})
 
 // Remove user's listing's and references.
 userSchema.post('remove', async function (doc, next) {

@@ -4,13 +4,17 @@ const { auth, catchAsync, isRequestBodyBlank } = require('../../middlewares')
 const { allowIfLoggedIn, grantAccess } = auth
 const { isValidOperation } = require('./user.middleware')
 const {
+	blockUser,
+	unblockUser,
 	createUser,
 	favoriteListing,
-	getUploadAccessToken,
+	getBlockedUsers,
+	getMessagedUsers,
 	getUsers,
 	getUserFavorites,
 	getUserListings,
 	getUserProfile,
+	getUserSoldListings,
 	removeUser,
 	unfavoriteListing,
 	updateUser,
@@ -21,6 +25,22 @@ router.post(
 	isRequestBodyBlank,
 	catchAsync(async (req, res) => {
 		res.status(201).json(await createUser(req.body))
+	})
+)
+
+router.post(
+	'/block-user',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await blockUser(req.user.id, req.body.id))
+	})
+)
+
+router.post(
+	'/unblock-user',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await unblockUser(req.user.id, req.body.id))
 	})
 )
 
@@ -55,6 +75,14 @@ router.get(
 	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(req.user)
+	})
+)
+
+router.post(
+	'/users/me/messaged-users',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await getMessagedUsers(req.body.users))
 	})
 )
 
@@ -98,6 +126,14 @@ router.delete(
 )
 
 router.get(
+	'/users/me/blocked-users',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await getBlockedUsers(req.user.id))
+	})
+)
+
+router.get(
 	'/users/me/favorites',
 	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
@@ -122,10 +158,26 @@ router.get(
 )
 
 router.get(
+	'/users/me/listings/sold',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await getUserSoldListings(req.user.id, req.query))
+	})
+)
+
+router.get(
 	'/users/:id/listings',
 	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(await getUserListings(req.params.id))
+	})
+)
+
+router.get(
+	'/users/:id/listings/sold',
+	allowIfLoggedIn,
+	catchAsync(async (req, res) => {
+		res.json(await getUserSoldListings(req.params.id, req.query))
 	})
 )
 

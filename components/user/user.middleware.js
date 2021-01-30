@@ -7,7 +7,7 @@ module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 	}
 
 	const updates = Object.keys(req.body)
-	const allowedUpdates = ['avatar', 'bio', 'email', 'displayName']
+	const allowedUpdates = ['avatar', 'bio', 'email', 'displayName', 'phone']
 	const isValidOperation = updates.every((update) =>
 		allowedUpdates.includes(update)
 	)

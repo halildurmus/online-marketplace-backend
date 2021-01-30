@@ -2,6 +2,22 @@ const { APIError } = require('../../helpers')
 const service = require('./user.service')
 
 module.exports = {
+	async blockUser(userId, blockUserId) {
+		if (!userId || !blockUserId) {
+			throw new APIError(400, 'You need to provide userId and blockUserId.')
+		}
+
+		return await service.blockUser(userId, blockUserId)
+	},
+
+	async unblockUser(userId, unblockUserId) {
+		if (!userId || !unblockUserId) {
+			throw new APIError(400, 'You need to provide userId and unblockUserId.')
+		}
+
+		return await service.unblockUser(userId, unblockUserId)
+	},
+
 	async createUser(params) {
 		if (!params) {
 			throw new APIError(400, 'You need to provide the required parameters.')
@@ -14,8 +30,6 @@ module.exports = {
 		if (!userId || !listingId) {
 			throw new APIError(400, 'You need to provide userId and listingId.')
 		}
-
-		await service.updateFavoritesCounter(listingId, 1)
 
 		return await service.favoriteListing(userId, listingId)
 	},
@@ -45,12 +59,24 @@ module.exports = {
 		return await service.getUsers(match, sort, limit, skip)
 	},
 
+	async getBlockedUsers(userId) {
+		return await service.getBlockedUsers(userId)
+	},
+
+	async getMessagedUsers(users) {
+		return await service.getMessagedUsers(users)
+	},
+
 	async getUserFavorites(userId) {
 		return await service.getUserFavorites(userId)
 	},
 
 	async getUserListings(userId) {
 		return await service.getUserListings(userId)
+	},
+
+	async getUserSoldListings(userId) {
+		return await service.getUserSoldListings(userId)
 	},
 
 	async getUserProfile(userId) {
@@ -65,8 +91,6 @@ module.exports = {
 		if (!userId || !listingId) {
 			throw new APIError(400, 'You need to provide userId and listingId.')
 		}
-
-		await service.updateFavoritesCounter(listingId, -1)
 
 		return await service.unfavoriteListing(userId, listingId)
 	},

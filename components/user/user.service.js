@@ -1,11 +1,38 @@
 const { APIError } = require('../../helpers')
-const { date } = require('../../utils')
-const { redisKeyUploadAccessToken } = require('../../config')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
-const redis = require('../../db/redis')
 
 module.exports = {
+	async blockUser(userId, blockUserId) {
+		const user = await User.findById(userId)
+		const blockUser = await User.findById(blockUserId)
+
+		if (!user || !blockUser) {
+			throw new APIError(400, 'The user not found.')
+		}
+
+		user.blockedUsers.push(blockUserId)
+
+		return await user.save()
+	},
+
+	async unblockUser(userId, unblockUserId) {
+		const user = await User.findById(userId)
+		const unblockUser = await User.findById(unblockUserId)
+
+		if (!user || !unblockUser) {
+			throw new APIError(400, 'The user not found.')
+		}
+
+		const index = user.blockedUsers.indexOf(unblockUserId)
+
+		if (index > -1) {
+			user.blockedUsers.splice(index, 1)
+		}
+
+		return await user.save()
+	},
+
 	async createUser(params) {
 		// TODO: Save only allowed fields in the collection by filtering params.
 		const user = new User(params)
@@ -27,6 +54,7 @@ module.exports = {
 
 		const user = await User.findById(userId)
 		user.favorites.set(listingId, true)
+		await Listing.findByIdAndUpdate(listingId, { $inc: { favorites: 1 } })
 
 		return await user.save()
 	},
@@ -36,6 +64,20 @@ module.exports = {
 			.limit(parseInt(limit))
 			.skip(parseInt(skip))
 			.sort(sort)
+	},
+
+	async getBlockedUsers(userId) {
+		const user = await User.findById(userId)
+
+		if (!user) {
+			throw new APIError(404, `The user not found.`)
+		}
+
+		return User.find({ _id: { $in: user.blockedUsers } })
+	},
+
+	async getMessagedUsers(users) {
+		return User.find({ _id: { $in: users } })
 	},
 
 	async getUserFavorites(userId) {
@@ -63,7 +105,19 @@ module.exports = {
 
 		const listingIds = user.listings
 
-		return Listing.find({ _id: { $in: listingIds } })
+		return Listing.find({ isSold: false, _id: { $in: listingIds } })
+	},
+
+	async getUserSoldListings(userId) {
+		const user = await User.findById(userId)
+
+		if (!user) {
+			throw new APIError(404, `The user not found.`)
+		}
+
+		const listingIds = user.listings
+
+		return Listing.find({ isSold: true, _id: { $in: listingIds } })
 	},
 
 	async getUserProfile(id) {
@@ -103,16 +157,9 @@ module.exports = {
 		const key = `favorites.${listingId}`
 		const mod = { $unset: {} }
 		mod.$unset[key] = 1
+		await Listing.findByIdAndUpdate(listingId, { $inc: { favorites: -1 } })
 
 		return User.updateOne({ _id: userId }, mod)
-	},
-
-	async updateFavoritesCounter(id, count) {
-		return redis.hincrby(
-			`favorites_${date.getFormattedDate(new Date())}`,
-			id,
-			count
-		)
 	},
 
 	async updateUser(userId, params) {
