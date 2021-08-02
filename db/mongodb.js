@@ -10,7 +10,6 @@ const connectionOptions = {
 const logger = require('../utils').loggers.loggerMongodb
 const { mongodbUri } = require('../config')
 const mongoose = require('mongoose')
-const Listing = require('../components/listing/listing.model')
 mongoose.set('bufferCommands', false)
 
 let maxRetries = 5
@@ -40,7 +39,6 @@ mongoose.connection.on('connected', () => {
 
 mongoose.connection.on('open', () => {
 	logger.info('Mongodb connection is ready.')
-	Listing.synchronize()
 })
 
 mongoose.connection.on('disconnected', () => {

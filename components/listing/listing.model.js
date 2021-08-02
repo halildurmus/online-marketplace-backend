@@ -1,10 +1,12 @@
-const logger = require('../../utils/logger').loggerServer
 const mongoose = require('mongoose')
-const mongoosastic = require('mongoosastic')
 const Schema = mongoose.Schema
 const User = require('../user/user.model')
 const { nanoid } = require('nanoid')
-const { androidPackageName, firebaseWebApiKey } = require('../../config')
+const {
+	androidPackageName,
+	firebaseDynamicLinksUrl,
+	firebaseWebApiKey,
+} = require('../../config')
 const got = require('got')
 
 const listingSchema = new Schema(
@@ -79,16 +81,18 @@ const listingSchema = new Schema(
 	}
 )
 
+// Creates a 2dsphere Index for the location field.
 listingSchema.index({ location: '2dsphere' })
 
-const generateListingShareUrl = async (listingId) => {
+// Generates a Firebase Dynamic Link for the provided listingId.
+const generateDynamicLinkForListing = async (listingId) => {
 	const response = await got.post(
 		`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${firebaseWebApiKey}`,
 		{
 			json: {
 				dynamicLinkInfo: {
-					domainUriPrefix: 'https://codingwithflutter.page.link',
-					link: `https://codingwithflutter.page.link/listing?id=${listingId}`,
+					domainUriPrefix: firebaseDynamicLinksUrl,
+					link: `${firebaseDynamicLinksUrl}/listing?id=${listingId}`,
 					androidInfo: {
 						androidPackageName,
 					},
@@ -101,17 +105,15 @@ const generateListingShareUrl = async (listingId) => {
 		}
 	)
 
-	if (response.statusCode === 200) {
-		return response.body.shortLink
-	}
+	return response.statusCode === 200 ? response.body.shortLink : ''
 }
 
-// Generate a share URL for the user's profile and save it.
+// Every time a new listing created, generate a Firebase Dynamic Link for it.
 listingSchema.pre('save', async function (next) {
 	const listing = this
 
 	if (listing.isNew) {
-		listing.shareURL = await generateListingShareUrl(listing._id)
+		listing.shareURL = await generateDynamicLinkForListing(listing._id)
 	}
 
 	next()
@@ -164,16 +166,6 @@ listingSchema.post('remove', async function (doc, next) {
 	next()
 })
 
-listingSchema.plugin(mongoosastic, {
-	host: '35.198.111.64',
-	port: 9200,
-})
-
 const Listing = mongoose.model('Listing', listingSchema)
-
-Listing.createMapping({}, (err, results) => {
-	if (err) return console.error(err)
-	logger.info('Listing mapping created.')
-})
 
 module.exports = Listing

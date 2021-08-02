@@ -1,7 +1,5 @@
 const { APIError } = require('../../helpers')
 const Listing = require('./listing.model')
-const { Client } = require('@elastic/elasticsearch')
-const client = new Client({ node: 'http://35.198.111.64:9200' })
 
 module.exports = {
 	async createListing(userId, params) {
@@ -36,21 +34,9 @@ module.exports = {
 	},
 
 	async searchListings(query) {
-		const results = await client.search({
-			index: 'listings',
-			body: {
-				suggest: {
-					'listing-suggest-fuzzy': {
-						prefix: query,
-						completion: {
-							field: 'title',
-						},
-					},
-				},
-			},
+		return Listing.find({
+			$text: { $search: new RegExp(query, 'i') },
 		})
-
-		return results.body.suggest['listing-suggest-fuzzy'][0].options
 	},
 
 	async searchListingsByKeywords(query) {
@@ -84,6 +70,5 @@ module.exports = {
 
 	async updateViewsCounter(id) {
 		return Listing.findByIdAndUpdate(id, { $inc: { views: 1 } }, { new: true })
-		// return redis.hincrby(`views_${date.getFormattedDate(new Date())}`, id, 1)
 	},
 }
