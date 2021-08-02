@@ -10,10 +10,10 @@ const reportRouter = require('./components/report/report.route')
 const reviewRouter = require('./components/review/review.route')
 const userRouter = require('./components/user/user.route')
 const admin = require('firebase-admin')
-const serviceAccount = require('./auth-9c17c-firebase-adminsdk-lwygd-3e0c1a8b43.json')
 
+// Initializes the Firebase Admin SDK.
 admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount),
+	credential: admin.credential.applicationDefault(),
 	databaseURL: firebaseDbUrl,
 })
 
@@ -21,7 +21,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Register routes.
+// Registers routes.
 app.use(apiPrefix, categoryRouter)
 app.use(apiPrefix, listingRouter)
 app.use(apiPrefix, reportRouter)
