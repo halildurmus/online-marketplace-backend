@@ -1,4 +1,4 @@
-const { findSubject } = require('../../utils/misc')
+const { findReportSubject } = require('../../utils/misc')
 const listingSubjects = require('./listing-subjects')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -22,9 +22,9 @@ const reportSchema = new Schema(
 				delete ret.createdAt
 				delete ret.updatedAt
 				if (doc.reportedListing) {
-					ret.subject = findSubject(listingSubjects, doc.subject)
+					ret.subject = findReportSubject(listingSubjects, doc.subject)
 				} else {
-					ret.subject = findSubject(userSubjects, doc.subject)
+					ret.subject = findReportSubject(userSubjects, doc.subject)
 				}
 			},
 		},

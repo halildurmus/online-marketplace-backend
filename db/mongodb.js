@@ -19,14 +19,16 @@ const connectWithRetry = () => {
 			logger.error(
 				`Failed to connect to mongodb on startup. ${maxRetries} tries left. Retrying in 5 sec...`
 			)
+			// Connection failed, decrease retries counter by 1.
 			maxRetries--
+			// Try again with 5 seconds later.
 			setTimeout(connectWithRetry, 5000)
 		})
-	} else {
-		logger.info(`💥 Shutting down...`)
-
-		return process.exit(1)
 	}
+
+	logger.info(`💥 Shutting down...`)
+
+	return process.exit(1)
 }
 
 mongoose.connection.on('connecting', () => {

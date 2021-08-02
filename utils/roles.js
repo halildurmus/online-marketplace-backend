@@ -1,6 +1,7 @@
 const AccessControl = require('accesscontrol')
 const ac = new AccessControl()
 
+// Specifies the user permissions.
 ac.grant('user')
 	.readOwn('favorites')
 	.readOwn('listing')
@@ -14,6 +15,7 @@ ac.grant('user')
 	.deleteOwn('favorites')
 	.deleteOwn('listing')
 
+// Specifies the admin permissions.
 ac.grant('admin')
 	.extend('user')
 	.createAny('category')

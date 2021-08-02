@@ -1,5 +1,5 @@
 const { APIError } = require('../../helpers')
-const { findSubject } = require('../../utils/misc')
+const { findReportSubject } = require('../../utils/misc')
 const listingSubjects = require('./listing-subjects')
 const service = require('./report.service')
 const userSubjects = require('./user-subjects')
@@ -18,11 +18,11 @@ module.exports = {
 		} else if (params.reportedListing && params.reportedUser) {
 			throw new APIError(400, 'You can only report one entity at a time.')
 		} else if (params.reportedListing && !params.reportedUser) {
-			if (!findSubject(listingSubjects, params.subject)) {
+			if (!findReportSubject(listingSubjects, params.subject)) {
 				throw new APIError(400, 'Invalid subject!')
 			}
 		} else if (params.reportedUser && !params.subject) {
-			if (!findSubject(userSubjects, params.reportedUser)) {
+			if (!findReportSubject(userSubjects, params.reportedUser)) {
 				throw new APIError(400, 'Invalid subject!')
 			}
 		}

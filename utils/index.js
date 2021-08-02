@@ -1,6 +1,6 @@
 module.exports = {
-	date: require('./date'),
 	loggers: require('./logger'),
+	misc: require('./misc'),
 	roles: require('./roles'),
 	text: require('./text'),
 }

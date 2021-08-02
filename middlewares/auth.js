@@ -6,21 +6,17 @@ const admin = require('firebase-admin')
 
 module.exports.allowIfLoggedIn = catchAsync(async (req, res, next) => {
 	let token = req.header('Authorization')
-
 	if (!token) {
 		throw new APIError(400, 'Authorization token not found.')
 	}
 
 	token = text.parseAuthToken(token)
-
 	const decoded = await admin.auth().verifyIdToken(token)
-
 	if (!decoded) {
 		throw new APIError(401, 'Invalid authorization token.')
 	}
 
 	const user = await User.findOne({ uid: decoded.user_id })
-
 	if (!user) {
 		throw new APIError(401, 'Invalid authorization token.')
 	}
@@ -35,6 +31,7 @@ module.exports.grantAccess = (action, resource) => {
 			403,
 			'You do not have permission to perform this action.'
 		)
+
 		if (
 			req.user.role === 'user' &&
 			(req.method === 'DELETE' || req.method === 'PATCH')
