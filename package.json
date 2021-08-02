@@ -9,8 +9,11 @@
     "test": "set NODE_ENV=test&& jest --runInBand --watchAll"
   },
   "keywords": [],
-  "author": "",
+  "author": "Halil Ibrahim Durmus",
   "license": "ISC",
+	"jest": {
+		"testEnvironment": "node"
+	},
   "dependencies": {
     "accesscontrol": "^2.2.1",
     "bcrypt": "^5.0.0",
