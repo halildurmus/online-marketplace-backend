@@ -1,15 +1,15 @@
 const { ApiError } = require('../../helpers')
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 const { isValidOperation } = require('./user.middleware')
 
 // Connects to a new in-memory database before running any tests.
-beforeAll(async () => await dbHandler.connect())
+beforeAll(async () => await mongodbHandler.connect())
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 // Removes and closes the db and server.
-afterAll(async () => await dbHandler.closeDatabase())
+afterAll(async () => await mongodbHandler.closeDatabase())
 
 describe('isValidOperation middleware', () => {
 	it('Should throw an ApiError if the fields to be updated not provided', async () => {

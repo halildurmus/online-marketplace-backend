@@ -1,4 +1,4 @@
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
 const service = require('./user.service')
@@ -10,13 +10,13 @@ const user1 = require('./dummies/user1.json')
 const user2 = require('./dummies/user2.json')
 
 // Connects to a new in-memory database before running any tests.
-beforeAll(async () => await dbHandler.connect())
+beforeAll(async () => await mongodbHandler.connect())
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 // Removes and closes the db and server.
-afterAll(async () => await dbHandler.closeDatabase())
+afterAll(async () => await mongodbHandler.closeDatabase())
 
 async function createUsers() {
 	await service.createUser(admin)
@@ -41,7 +41,7 @@ describe('createUser service', () => {
 
 describe('favoriteListing service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should throw an ApiError if the listing favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
@@ -70,7 +70,7 @@ describe('favoriteListing service', () => {
 
 describe('getUsers service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should return empty array if no users found', async () => {
 		const users = await service.getUsers({}, {}, 0, 0)
@@ -146,7 +146,7 @@ describe('getUsers service', () => {
 
 describe('getUserFavorites service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should return empty array if no favorites found', async () => {
 		const user = await service.createUser(user1)
@@ -180,7 +180,7 @@ describe('getUserFavorites service', () => {
 
 describe('getUserListings service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should return empty array if no listings found', async () => {
 		const user = await service.createUser(user1)
@@ -297,7 +297,7 @@ describe('removeUser service', () => {
 
 describe('unfavoriteListing service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should throw an ApiError if the listing is not favorited before by the same user', async () => {
 		const user = await service.createUser(user1)

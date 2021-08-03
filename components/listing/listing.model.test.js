@@ -1,4 +1,4 @@
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 const Listing = require('./listing.model')
 const User = require('../user/user.model')
 const userService = require('../user/user.service')
@@ -7,17 +7,17 @@ const listing1 = require('./dummies/listing1.json')
 const user1 = require('../user/dummies/user1.json')
 
 // Connects to a new in-memory database before running any tests.
-beforeAll(async () => await dbHandler.connect())
+beforeAll(async () => await mongodbHandler.connect())
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 // Removes and closes the db and server.
-afterAll(async () => await dbHandler.closeDatabase())
+afterAll(async () => await mongodbHandler.closeDatabase())
 
 describe('Mongoose Schema Validation', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should throw a ValidationError while trying to create a listing without parameters', async () => {
 		await expect(async () => await Listing.create({})).rejects.toThrow(
@@ -111,7 +111,7 @@ describe('Mongoose Schema Validation', () => {
 
 describe('Mongoose Middleware', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it(`Should save listing's reference to the user who posted it`, async () => {
 		const user = await User.create(user1)

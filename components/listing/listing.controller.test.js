@@ -1,4 +1,4 @@
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 const controller = require('./listing.controller')
 const redis = require('../../db/redis')
 // Dummy objects.
@@ -6,13 +6,13 @@ const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
 
 // Connects to a new in-memory database before running any tests.
-beforeAll(async () => await dbHandler.connect())
+beforeAll(async () => await mongodbHandler.connect())
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 // Removes and closes the db and server.
-afterAll(async () => await dbHandler.closeDatabase())
+afterAll(async () => await mongodbHandler.closeDatabase())
 
 describe('createListing controller', () => {
 	it('Should throw an ApiError while creating a listing without parameters', async () => {

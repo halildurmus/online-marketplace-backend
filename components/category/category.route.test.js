@@ -1,13 +1,13 @@
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 
 // Connects to the in-memory database.
 beforeAll(async () => {
-	await dbHandler.writeMongoUriToEnv()
+	await mongodbHandler.writeMongoUriToEnv()
 	await require('../../db').mongodb
 })
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 const admin = require('../user/dummies/admin.json')
 const app = require('../../app')

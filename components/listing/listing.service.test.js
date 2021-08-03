@@ -1,17 +1,17 @@
-const dbHandler = require('../../tests/db')
+const mongodbHandler = require('../../tests/mongodb-handler')
 const service = require('./listing.service')
 // Dummy objects.
 const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
 
 // Connects to a new in-memory database before running any tests.
-beforeAll(async () => await dbHandler.connect())
+beforeAll(async () => await mongodbHandler.connect())
 
 // Clears all test data after every test.
-afterEach(async () => await dbHandler.clearDatabase())
+afterEach(async () => await mongodbHandler.clearDatabase())
 
 // Removes and closes the db and server.
-afterAll(async () => await dbHandler.closeDatabase())
+afterAll(async () => await mongodbHandler.closeDatabase())
 
 async function createListings() {
 	await service.createListing('5f785989e8421c13d422f934', listing1)
@@ -54,7 +54,7 @@ describe('getListing service', () => {
 
 describe('getListings service', () => {
 	// Clears all test data after every test.
-	afterEach(async () => await dbHandler.clearDatabase())
+	afterEach(async () => await mongodbHandler.clearDatabase())
 
 	it('Should return empty array if no listing found', async () => {
 		const listings = await service.getListings({}, {}, 0, 0)
