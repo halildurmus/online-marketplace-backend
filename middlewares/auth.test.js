@@ -1,8 +1,6 @@
 const { APIError } = require('../helpers')
 const { allowIfLoggedIn, grantAccess } = require('./auth')
 const { createRequest } = require('node-mocks-http')
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../config')
 const User = require('../components/user/user.model')
 
 describe('allowIfLoggedIn middleware', () => {

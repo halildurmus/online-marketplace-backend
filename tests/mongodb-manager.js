@@ -36,7 +36,7 @@ module.exports.clearDatabase = async () => {
 	}
 }
 
-// Drops database, closes the connection and stop mongod.
+// Drops database, closes the connection and stops mongod.
 module.exports.closeDatabase = async () => {
 	await mongoose.connection.dropDatabase()
 	await mongoose.connection.close()
