@@ -1,7 +1,6 @@
 const mongodbHandler = require('../../tests/mongodb-handler')
 const controller = require('./user.controller')
 const Listing = require('../listing/listing.model')
-const redis = require('../../db/redis')
 const User = require('./user.model')
 // Dummy objects.
 const listing1 = require('../listing/dummies/listing1.json')
@@ -39,10 +38,6 @@ describe('favoriteListing controller', () => {
 	})
 
 	it('Should throw an ApiError while trying to favorite a listing twice', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
-			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({
 			postedBy: user.id,
@@ -53,13 +48,9 @@ describe('favoriteListing controller', () => {
 		await expect(async () =>
 			controller.favoriteListing(user.id, listing.id)
 		).rejects.toThrow('You can only favorite a listing once.')
-		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should favorite the listing', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({
 			postedBy: user.id,
@@ -69,7 +60,6 @@ describe('favoriteListing controller', () => {
 		const res = await controller.favoriteListing(user.id, listing.id)
 
 		expect(res).toMatchObject({})
-		mockRedisHincrby.mockRestore()
 	})
 })
 
@@ -98,16 +88,12 @@ describe('getUserFavorites controller', () => {
 	})
 
 	it(`Should return the user favorites`, async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({ postedBy: user.id, ...listing1 })
 		await controller.favoriteListing(user.id, listing.id)
 		const res = await controller.getUserFavorites(user.id)
 
 		expect(res).toMatchObject({})
-		mockRedisHincrby.mockRestore()
 	})
 })
 
@@ -213,9 +199,6 @@ describe('unfavoriteListing controller', () => {
 	})
 
 	it('Should throw an ApiError while trying to unfavorite a listing that never been favorited before', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({
 			postedBy: user.id,
@@ -227,14 +210,9 @@ describe('unfavoriteListing controller', () => {
 		).rejects.toThrow(
 			'You cannot unfavorite a listing that you have never favorited before.'
 		)
-		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should unfavorite the listing', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
-			.mockReturnValueOnce(true)
 		const user = await User.create(user1)
 		const listing = await Listing.create({
 			postedBy: user.id,
@@ -245,7 +223,6 @@ describe('unfavoriteListing controller', () => {
 		const res = await controller.unfavoriteListing(user.id, listing.id)
 
 		expect(res).toMatchObject({})
-		mockRedisHincrby.mockRestore()
 	})
 })
 

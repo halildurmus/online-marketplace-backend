@@ -24,7 +24,6 @@ const loggerOptions = (service) => {
 }
 
 const loggerMongodb = loggers.add('mongodb', loggerOptions('mongodb'))
-const loggerRedis = loggers.add('redis', loggerOptions('redis'))
 const loggerServer = loggers.add('server', loggerOptions('server'))
 
 // Custom format for logging to the `console`.
@@ -38,7 +37,6 @@ if (nodeEnv !== 'production') {
 		format: combine(timestamp(), colorize(), myFormat),
 	})
 	loggerMongodb.add(transportConsole)
-	loggerRedis.add(transportConsole)
 	loggerServer.add(transportConsole)
 }
 

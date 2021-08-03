@@ -1,6 +1,5 @@
 const mongodbHandler = require('../../tests/mongodb-handler')
 const controller = require('./listing.controller')
-const redis = require('../../db/redis')
 // Dummy objects.
 const listing1 = require('./dummies/listing1.json')
 const listing2 = require('./dummies/listing2.json')
@@ -33,20 +32,12 @@ describe('createListing controller', () => {
 
 describe('getListing controller', () => {
 	it('Should throw an ApiError while trying to find a listing with invalid id', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
-
 		await expect(
 			async () => await controller.getListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')
-		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should find the listing', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const listing = await controller.createListing(
 			'5f785989e8421c13d422f934',
 			listing1
@@ -54,7 +45,6 @@ describe('getListing controller', () => {
 		const foundListing = await controller.getListing(listing.id)
 
 		expect(foundListing).toMatchObject({})
-		mockRedisHincrby.mockRestore()
 	})
 })
 

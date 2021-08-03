@@ -15,9 +15,6 @@ describe('allowIfLoggedIn middleware', () => {
 	})
 
 	it('Should throw an ApiError if the user is not found', async () => {
-		const mockJwtVerify = jest
-			.spyOn(jwt, 'verify')
-			.mockReturnValueOnce({ _id: '5f6f82f623f63f28e8bf0b44' })
 		const mockUserFindOne = jest.spyOn(User, 'findOne').mockResolvedValue(false)
 		const token =
 			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmODJmNjIzZjYzZjI4ZThiZjBiNDQiLCJpYXQiOjE2MDEzNjc2NTAsImV4cCI6MTYwMTQ1NDA1MH0.p_vdPKfCgdI6v7Jt_z9BeXCPjX1WMowRsvB3-FoGzUY'
@@ -31,20 +28,14 @@ describe('allowIfLoggedIn middleware', () => {
 
 		await allowIfLoggedIn(req, {}, next)
 
-		expect(mockJwtVerify).toBeCalledWith(token, jwtSecretKey)
 		expect(mockUserFindOne).toBeCalledWith({
 			_id: '5f6f82f623f63f28e8bf0b44',
 			'tokens.token': token,
 		})
 		expect(next).toBeCalledWith(error)
-
-		mockJwtVerify.mockRestore()
 	})
 
 	it('Should call the next function if the user is found', async () => {
-		const mockJwtVerify = jest
-			.spyOn(jwt, 'verify')
-			.mockReturnValueOnce({ _id: '5f6b859c2dafb7a6f8b74674' })
 		const mockUserFindOne = jest.spyOn(User, 'findOne').mockResolvedValue(true)
 		const token =
 			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZiODU5YzJkYWZiN2E2ZjhiNzQ2NzQiLCJpYXQiOjE2MDEyOTMzMjksImV4cCI6MTYwMTM3OTcyOX0.1AtFtsH7VZAlx7rAomF-YvuZhHNmrvspXGt98bHr5eg'
@@ -58,15 +49,12 @@ describe('allowIfLoggedIn middleware', () => {
 
 		await allowIfLoggedIn(req, {}, next)
 
-		expect(mockJwtVerify).toBeCalledWith(token, jwtSecretKey)
 		expect(mockUserFindOne).toBeCalledWith({
 			_id: '5f6b859c2dafb7a6f8b74674',
 			'tokens.token': token,
 		})
 		expect(next).toBeCalled()
 		expect(next).not.toBeCalledWith(error)
-
-		mockJwtVerify.mockRestore()
 	})
 })
 

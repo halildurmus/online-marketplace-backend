@@ -13,7 +13,6 @@ const app = require('../../app')
 const mongoose = require('mongoose')
 const Listing = mongoose.model('Listing')
 const User = mongoose.model('User')
-const redis = require('../../db/redis')
 const request = require('supertest')
 // Dummy objects.
 const admin = require('../user/dummies/admin.json')
@@ -76,21 +75,13 @@ describe('GET /listings', () => {
 
 describe('GET /listings/:id', () => {
 	it('Should respond with 404 if no listing found', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		await request(app)
 			.get(`${process.env.API_PREFIX}/listings/5f785989e8421c13d422f934`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(404)
-
-		mockRedisHincrby.mockRestore()
 	})
 
 	it('Should respond with an object containing the requested listing', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const listing = await Listing.create({
 			postedBy: '5f785989e8421c13d422f934',
 			...listing1,
@@ -102,8 +93,6 @@ describe('GET /listings/:id', () => {
 			.expect(200)
 
 		expect(res.body).toEqual(expect.objectContaining(listing1))
-
-		mockRedisHincrby.mockRestore()
 	})
 })
 

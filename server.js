@@ -2,7 +2,6 @@ const app = require('./app')
 const http = require('http')
 const logger = require('./utils').loggers.loggerServer
 const mongoose = require('mongoose')
-const { redis } = require('./db')
 
 const port = process.env.PORT || 3000
 const server = http.createServer(app)
@@ -26,7 +25,6 @@ async function gracefullyShutdown(err) {
 	logger.error('💥 Shutting down...')
 	server.close(async () => {
 		logger.info('HTTP server closed.')
-		await redis.quit()
 		await mongoose.disconnect()
 		process.exit(0)
 	})

@@ -8,5 +8,4 @@ module.exports = {
 	firebaseWebApiKey: process.env.FIREBASE_WEB_API_KEY,
 	mongodbUri: process.env.MONGODB_URI,
 	nodeEnv: process.env.NODE_ENV,
-	redisUri: process.env.REDIS_URL,
 }

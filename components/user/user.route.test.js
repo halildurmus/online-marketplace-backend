@@ -10,12 +10,9 @@ beforeAll(async () => {
 afterEach(async () => await mongodbHandler.clearDatabase())
 
 const app = require('../../app')
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../../config')
 const mongoose = require('mongoose')
 const Listing = mongoose.model('Listing')
 const User = mongoose.model('User')
-const redis = require('../../db/redis')
 const request = require('supertest')
 const service = require('./user.service')
 // Dummy objects.
@@ -52,9 +49,6 @@ describe('POST /auth/login', () => {
 			.expect(200)
 
 		expect(res.body.user.email).toBe(user1.email)
-		expect(jwt.verify(res.body.token, jwtSecretKey)._id).toEqual(
-			res.body.user.id
-		)
 	})
 })
 
@@ -108,9 +102,6 @@ describe('POST /auth/register', () => {
 			.expect(201)
 
 		expect(res.body.user.email).toBe(user1.email)
-		expect(jwt.verify(res.body.token, jwtSecretKey)._id).toEqual(
-			res.body.user.id
-		)
 	})
 })
 
@@ -120,9 +111,6 @@ describe('POST /favorites', () => {
 	})
 
 	it('Should respond with an object containing the user', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const user = await createUser(user1)
 		const listing = await createListing(user.user.id)
 
@@ -133,7 +121,6 @@ describe('POST /favorites', () => {
 			.expect(200)
 
 		expect(res.body.email).toBe(user1.email)
-		mockRedisHincrby.mockRestore()
 	})
 })
 
@@ -145,9 +132,6 @@ describe('DELETE /favorites/:id', () => {
 	})
 
 	it('Should respond with an object containing the user', async () => {
-		const mockRedisHincrby = jest
-			.spyOn(redis, 'hincrby')
-			.mockReturnValueOnce(true)
 		const user = await createUser(user1)
 		const listing = await createListing(user.user.id)
 		await service.favoriteListing(user.user.id, listing.id)
@@ -156,7 +140,6 @@ describe('DELETE /favorites/:id', () => {
 			.delete(`${process.env.API_PREFIX}/favorites/${listing.id}`)
 			.set('Authorization', `Bearer ${authToken}`)
 			.expect(200)
-		mockRedisHincrby.mockRestore()
 	})
 })
 

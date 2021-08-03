@@ -35,7 +35,6 @@ describe('createUser service', () => {
 		expect(res.user.password).not.toEqual(user1.password)
 		expect(res.user.toJSON().location).toEqual(user1.location)
 		expect(res.token).toBeTruthy()
-		expect(jwt.verify(res.token, jwtSecretKey)._id).toEqual(res.user.id)
 	})
 })
 
@@ -244,7 +243,6 @@ describe('login service', () => {
 		})
 
 		expect(res.user.email).toBe(user1.email)
-		expect(jwt.verify(res.token, jwtSecretKey)._id).toEqual(res.user.id)
 	})
 })
 
