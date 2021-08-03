@@ -22,7 +22,6 @@ router.get(
 
 router.get(
 	'/categories',
-	allowIfLoggedIn,
 	catchAsync(async (req, res) => {
 		res.json(await getCategories())
 	})

@@ -1,10 +1,10 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const service = require('./listing.service')
 
 module.exports = {
 	async createListing(userId, params) {
 		if (!userId || !params) {
-			throw new APIError(400, `You need to provide userId and listing params.`)
+			throw new ApiError(400, `You need to provide userId and listing params.`)
 		}
 
 		return await service.createListing(userId, params)

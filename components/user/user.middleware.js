@@ -1,9 +1,9 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const { catchAsync } = require('../../middlewares')
 
 module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 	if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
-		throw new APIError(404, 'You need to provide the fields to be updated!')
+		throw new ApiError(404, 'You need to provide the fields to be updated!')
 	}
 
 	const updates = Object.keys(req.body)
@@ -13,7 +13,7 @@ module.exports.isValidOperation = catchAsync(async (req, res, next) => {
 	)
 
 	if (!isValidOperation) {
-		throw new APIError(400, `Invalid operation!`)
+		throw new ApiError(400, `Invalid operation!`)
 	}
 
 	next()

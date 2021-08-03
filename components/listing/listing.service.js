@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const Listing = require('./listing.model')
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			throw new APIError(404, 'The listing not found.')
+			throw new ApiError(404, 'The listing not found.')
 		}
 
 		listing.views += 1
@@ -49,7 +49,7 @@ module.exports = {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			throw new APIError(404, 'The listing not found.')
+			throw new ApiError(404, 'The listing not found.')
 		}
 
 		return await listing.remove()
@@ -59,7 +59,7 @@ module.exports = {
 		const listing = await Listing.findById(id)
 
 		if (!listing) {
-			throw new APIError(404, 'The listing not found.')
+			throw new ApiError(404, 'The listing not found.')
 		}
 
 		const updates = Object.keys(params)

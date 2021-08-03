@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const { findReportSubject } = require('../../utils/misc')
 const listingSubjects = require('./listing-subjects')
 const service = require('./report.service')
@@ -7,23 +7,23 @@ const userSubjects = require('./user-subjects')
 module.exports = {
 	async createReport(userId, params) {
 		if (!userId) {
-			throw new APIError(400, `You need to provide an userId.`)
+			throw new ApiError(400, `You need to provide an userId.`)
 		}
 
 		if (!params.reportedListing && !params.reportedUser) {
-			throw new APIError(
+			throw new ApiError(
 				400,
 				'You need to provide the id of the list or user you are reporting.'
 			)
 		} else if (params.reportedListing && params.reportedUser) {
-			throw new APIError(400, 'You can only report one entity at a time.')
+			throw new ApiError(400, 'You can only report one entity at a time.')
 		} else if (params.reportedListing && !params.reportedUser) {
 			if (!findReportSubject(listingSubjects, params.subject)) {
-				throw new APIError(400, 'Invalid subject!')
+				throw new ApiError(400, 'Invalid subject!')
 			}
 		} else if (params.reportedUser && !params.subject) {
 			if (!findReportSubject(userSubjects, params.reportedUser)) {
-				throw new APIError(400, 'Invalid subject!')
+				throw new ApiError(400, 'Invalid subject!')
 			}
 		}
 		return await service.createReport(userId, params)

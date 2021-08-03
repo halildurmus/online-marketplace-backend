@@ -18,7 +18,7 @@ afterEach(async () => await dbHandler.clearDatabase())
 afterAll(async () => await dbHandler.closeDatabase())
 
 describe('createUser controller', () => {
-	it('Should throw an APIError while creating a user without parameters', async () => {
+	it('Should throw an ApiError while creating a user without parameters', async () => {
 		await expect(async () => await controller.createUser()).rejects.toThrow(
 			'You need to provide the required parameters.'
 		)
@@ -32,13 +32,13 @@ describe('createUser controller', () => {
 })
 
 describe('favoriteListing controller', () => {
-	it('Should throw an APIError while trying to favorite a listing without parameters', async () => {
+	it('Should throw an ApiError while trying to favorite a listing without parameters', async () => {
 		await expect(
 			async () => await controller.favoriteListing()
 		).rejects.toThrow('You need to provide userId and listingId.')
 	})
 
-	it('Should throw an APIError while trying to favorite a listing twice', async () => {
+	it('Should throw an ApiError while trying to favorite a listing twice', async () => {
 		const mockRedisHincrby = jest
 			.spyOn(redis, 'hincrby')
 			.mockReturnValueOnce(true)
@@ -91,7 +91,7 @@ describe('getUsers controller', () => {
 })
 
 describe('getUserFavorites controller', () => {
-	it('Should throw an APIError while trying to get user favorites without providing userId', async () => {
+	it('Should throw an ApiError while trying to get user favorites without providing userId', async () => {
 		await expect(async () => controller.getUserFavorites()).rejects.toThrow(
 			`The user not found.`
 		)
@@ -112,7 +112,7 @@ describe('getUserFavorites controller', () => {
 })
 
 describe('getUserListings controller', () => {
-	it('Should throw an APIError while trying to get user listings without providing userId', async () => {
+	it('Should throw an ApiError while trying to get user listings without providing userId', async () => {
 		await expect(async () => controller.getUserListings()).rejects.toThrow(
 			`The user not found.`
 		)
@@ -128,7 +128,7 @@ describe('getUserListings controller', () => {
 })
 
 describe('getUserProfile controller', () => {
-	it('Should throw an APIError while trying to get user profile without providing userId', async () => {
+	it('Should throw an ApiError while trying to get user profile without providing userId', async () => {
 		await expect(async () => controller.getUserProfile()).rejects.toThrow(
 			'The user not found.'
 		)
@@ -143,7 +143,7 @@ describe('getUserProfile controller', () => {
 })
 
 describe('login controller', () => {
-	it('Should throw an APIError while trying to login without providing parameters', async () => {
+	it('Should throw an ApiError while trying to login without providing parameters', async () => {
 		await expect(async () => controller.login()).rejects.toThrow(
 			'You need to provide your credentials.'
 		)
@@ -161,7 +161,7 @@ describe('login controller', () => {
 })
 
 describe('logout controller', () => {
-	it('Should throw an APIError while trying to end current session without providing parameters', async () => {
+	it('Should throw an ApiError while trying to end current session without providing parameters', async () => {
 		await expect(async () => controller.logout()).rejects.toThrow(
 			'You need to provide user object and accessToken.'
 		)
@@ -176,7 +176,7 @@ describe('logout controller', () => {
 })
 
 describe('logoutAll controller', () => {
-	it('Should throw an APIError while trying to end all sessions without providing the user object', async () => {
+	it('Should throw an ApiError while trying to end all sessions without providing the user object', async () => {
 		await expect(async () => controller.logoutAll()).rejects.toThrow(
 			'You need to provide user object.'
 		)
@@ -191,7 +191,7 @@ describe('logoutAll controller', () => {
 })
 
 describe('removeUser controller', () => {
-	it('Should throw an APIError while trying to remove an user with invalid id', async () => {
+	it('Should throw an ApiError while trying to remove an user with invalid id', async () => {
 		await expect(async () =>
 			controller.removeUser('5f785989e8421c13d422f934')
 		).rejects.toThrow('The user not found.')
@@ -206,13 +206,13 @@ describe('removeUser controller', () => {
 })
 
 describe('unfavoriteListing controller', () => {
-	it('Should throw an APIError while trying to unfavorite a listing without parameters', async () => {
+	it('Should throw an ApiError while trying to unfavorite a listing without parameters', async () => {
 		await expect(
 			async () => await controller.unfavoriteListing()
 		).rejects.toThrow('You need to provide userId and listingId.')
 	})
 
-	it('Should throw an APIError while trying to unfavorite a listing that never been favorited before', async () => {
+	it('Should throw an ApiError while trying to unfavorite a listing that never been favorited before', async () => {
 		const mockRedisHincrby = jest
 			.spyOn(redis, 'hincrby')
 			.mockReturnValueOnce(true)
@@ -250,7 +250,7 @@ describe('unfavoriteListing controller', () => {
 })
 
 describe('updateUser controller', () => {
-	it('Should throw an APIError while trying to update an user with invalid id', async () => {
+	it('Should throw an ApiError while trying to update an user with invalid id', async () => {
 		await expect(async () =>
 			controller.updateUser('5f785989e8421c13d422f934')
 		).rejects.toThrow('The user not found.')

@@ -118,7 +118,7 @@ describe('getCategories service', () => {
 })
 
 describe('getCategory service', () => {
-	it('Should throw an APIError if no category found', async () => {
+	it('Should throw an ApiError if no category found', async () => {
 		await expect(
 			async () => await service.getCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -133,7 +133,7 @@ describe('getCategory service', () => {
 })
 
 describe('getSubcategories service', () => {
-	it('Should throw an APIError if no category found', async () => {
+	it('Should throw an ApiError if no category found', async () => {
 		await expect(
 			async () => await service.getSubcategories('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -175,7 +175,7 @@ describe('getSubcategories service', () => {
 })
 
 describe('removeCategory service', () => {
-	it('Should throw an APIError if no category found', async () => {
+	it('Should throw an ApiError if no category found', async () => {
 		await expect(
 			async () => await service.removeCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -196,7 +196,7 @@ describe('removeCategory service', () => {
 })
 
 describe('updateCategory service', () => {
-	it('Should throw an APIError if no category found', async () => {
+	it('Should throw an ApiError if no category found', async () => {
 		await expect(
 			async () => await service.updateCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')

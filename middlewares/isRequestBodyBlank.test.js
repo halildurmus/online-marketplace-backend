@@ -1,10 +1,10 @@
-const { APIError } = require('../helpers')
+const { ApiError } = require('../helpers')
 const { isRequestBodyBlank } = require('./')
 
-it('Should throw an APIError if the req body is empty', async () => {
+it('Should throw an ApiError if the req body is empty', async () => {
 	const req = { body: {} }
 	const next = jest.fn()
-	const error = new APIError(400, `Request body can't be blank.`)
+	const error = new ApiError(400, `Request body can't be blank.`)
 
 	await isRequestBodyBlank(req, {}, next)
 
@@ -14,7 +14,7 @@ it('Should throw an APIError if the req body is empty', async () => {
 it('Should call the next function if the req body is not empty', async () => {
 	const req = { body: { firstName: 'Halil İbrahim', lastName: 'Durmuş' } }
 	const next = jest.fn()
-	const error = new APIError(400, `Request body can't be blank.`)
+	const error = new ApiError(400, `Request body can't be blank.`)
 
 	await isRequestBodyBlank(req, {}, next)
 

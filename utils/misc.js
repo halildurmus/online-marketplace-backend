@@ -1,4 +1,4 @@
-const { APIError } = require('../helpers')
+const { ApiError } = require('../helpers')
 
 module.exports = {
 	/**
@@ -17,6 +17,6 @@ module.exports = {
 			}
 		}
 
-		throw new APIError(400, 'Invalid report subject.')
+		throw new ApiError(400, 'Invalid report subject.')
 	},
 }

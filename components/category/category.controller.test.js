@@ -57,7 +57,7 @@ describe('getCategories controller', () => {
 })
 
 describe('getCategory controller', () => {
-	it('Should throw an APIError while trying to find a category with invalid id', async () => {
+	it('Should throw an ApiError while trying to find a category with invalid id', async () => {
 		await expect(
 			async () => await controller.getCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -72,7 +72,7 @@ describe('getCategory controller', () => {
 })
 
 describe('getSubcategories controller', () => {
-	it('Should throw an APIError while trying to find the subcategories of a category with invalid id', async () => {
+	it('Should throw an ApiError while trying to find the subcategories of a category with invalid id', async () => {
 		await expect(async () =>
 			controller.getSubcategories('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -96,7 +96,7 @@ describe('getSubcategories controller', () => {
 })
 
 describe('removeCategory controller', () => {
-	it('Should throw an APIError while trying to remove a category with invalid id', async () => {
+	it('Should throw an ApiError while trying to remove a category with invalid id', async () => {
 		await expect(async () =>
 			controller.removeCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')
@@ -117,7 +117,7 @@ describe('removeCategory controller', () => {
 })
 
 describe('updateCategory controller', () => {
-	it('Should throw an APIError while trying to update a category with invalid id', async () => {
+	it('Should throw an ApiError while trying to update a category with invalid id', async () => {
 		await expect(async () =>
 			controller.updateCategory('5f785989e8421c13d422f934')
 		).rejects.toThrow('The category not found.')

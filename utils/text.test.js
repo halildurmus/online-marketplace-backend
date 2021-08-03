@@ -8,7 +8,7 @@ it('should parse an authentication token from the provided string', () => {
 	)
 })
 
-it('should throw an APIError if the provided string format is invalid', () => {
+it('should throw an ApiError if the provided string format is invalid', () => {
 	const token1 = 'BearereyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
 	const token2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
 

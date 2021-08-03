@@ -15,7 +15,7 @@ afterEach(async () => await dbHandler.clearDatabase())
 afterAll(async () => await dbHandler.closeDatabase())
 
 describe('createListing controller', () => {
-	it('Should throw an APIError while creating a listing without parameters', async () => {
+	it('Should throw an ApiError while creating a listing without parameters', async () => {
 		await expect(async () => await controller.createListing()).rejects.toThrow(
 			'You need to provide userId and listing params.'
 		)
@@ -32,7 +32,7 @@ describe('createListing controller', () => {
 })
 
 describe('getListing controller', () => {
-	it('Should throw an APIError while trying to find a listing with invalid id', async () => {
+	it('Should throw an ApiError while trying to find a listing with invalid id', async () => {
 		const mockRedisHincrby = jest
 			.spyOn(redis, 'hincrby')
 			.mockReturnValueOnce(true)
@@ -71,7 +71,7 @@ describe('getListings controller', () => {
 })
 
 describe('removeListing controller', () => {
-	it('Should throw an APIError while trying to remove a listing with invalid id', async () => {
+	it('Should throw an ApiError while trying to remove a listing with invalid id', async () => {
 		await expect(async () =>
 			controller.removeListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')
@@ -89,7 +89,7 @@ describe('removeListing controller', () => {
 })
 
 describe('updateListing controller', () => {
-	it('Should throw an APIError while trying to update a listing with invalid id', async () => {
+	it('Should throw an ApiError while trying to update a listing with invalid id', async () => {
 		await expect(async () =>
 			controller.updateListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')

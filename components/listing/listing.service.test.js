@@ -34,7 +34,7 @@ describe('createListing service', () => {
 })
 
 describe('getListing service', () => {
-	it('Should throw an APIError if the listing not found', async () => {
+	it('Should throw an ApiError if the listing not found', async () => {
 		await expect(
 			async () => await service.getListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found')
@@ -126,7 +126,7 @@ describe('getListings service', () => {
 })
 
 describe('removeListing service', () => {
-	it('Should throw an APIError if no listing found', async () => {
+	it('Should throw an ApiError if no listing found', async () => {
 		await expect(
 			async () => await service.removeListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')
@@ -144,7 +144,7 @@ describe('removeListing service', () => {
 })
 
 describe('updateListing service', () => {
-	it('Should throw an APIError if no listing found', async () => {
+	it('Should throw an ApiError if no listing found', async () => {
 		await expect(
 			async () => await service.updateListing('5f785989e8421c13d422f934')
 		).rejects.toThrow('The listing not found.')

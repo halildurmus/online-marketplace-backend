@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
 
@@ -8,7 +8,7 @@ module.exports = {
 		const blockUser = await User.findById(blockUserId)
 
 		if (!user || !blockUser) {
-			throw new APIError(400, 'The user not found.')
+			throw new ApiError(400, 'The user not found.')
 		}
 
 		user.blockedUsers.push(blockUserId)
@@ -21,7 +21,7 @@ module.exports = {
 		const unblockUser = await User.findById(unblockUserId)
 
 		if (!user || !unblockUser) {
-			throw new APIError(400, 'The user not found.')
+			throw new ApiError(400, 'The user not found.')
 		}
 
 		const index = user.blockedUsers.indexOf(unblockUserId)
@@ -45,11 +45,11 @@ module.exports = {
 		const listing = await Listing.findById(listingId)
 
 		if (!listing) {
-			throw new APIError(400, 'The listing not found.')
+			throw new ApiError(400, 'The listing not found.')
 		}
 
 		if (await User.isFavoritedBefore(userId, listingId)) {
-			throw new APIError(400, 'You can only favorite a listing once.')
+			throw new ApiError(400, 'You can only favorite a listing once.')
 		}
 
 		const user = await User.findById(userId)
@@ -70,7 +70,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, `The user not found.`)
+			throw new ApiError(404, `The user not found.`)
 		}
 
 		return User.find({ _id: { $in: user.blockedUsers } })
@@ -84,7 +84,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, `The user not found.`)
+			throw new ApiError(404, `The user not found.`)
 		}
 
 		const favoriteIds = []
@@ -100,7 +100,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, `The user not found.`)
+			throw new ApiError(404, `The user not found.`)
 		}
 
 		const listingIds = user.listings
@@ -112,7 +112,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, `The user not found.`)
+			throw new ApiError(404, `The user not found.`)
 		}
 
 		const listingIds = user.listings
@@ -124,7 +124,7 @@ module.exports = {
 		const user = await User.findById(id)
 
 		if (!user) {
-			throw new APIError(404, `The user not found.`)
+			throw new ApiError(404, `The user not found.`)
 		}
 
 		return user
@@ -134,7 +134,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, 'The user not found.')
+			throw new ApiError(404, 'The user not found.')
 		}
 
 		return await user.remove()
@@ -144,11 +144,11 @@ module.exports = {
 		const listing = await Listing.findById(listingId)
 
 		if (!listing) {
-			throw new APIError(404, 'The listing not found.')
+			throw new ApiError(404, 'The listing not found.')
 		}
 
 		if (!(await User.isFavoritedBefore(userId, listingId))) {
-			throw new APIError(
+			throw new ApiError(
 				400,
 				'You cannot unfavorite a listing that you have never favorited before.'
 			)
@@ -166,7 +166,7 @@ module.exports = {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			throw new APIError(404, 'The user not found.')
+			throw new ApiError(404, 'The user not found.')
 		}
 
 		const updates = Object.keys(params)

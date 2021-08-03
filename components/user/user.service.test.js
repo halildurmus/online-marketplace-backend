@@ -1,6 +1,4 @@
 const dbHandler = require('../../tests/db')
-const jwt = require('jsonwebtoken')
-const { jwtSecretKey } = require('../../config')
 const Listing = require('../listing/listing.model')
 const User = require('./user.model')
 const service = require('./user.service')
@@ -45,7 +43,7 @@ describe('favoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should throw an APIError if the listing favorited before by the same user', async () => {
+	it('Should throw an ApiError if the listing favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
 		const listing = await Listing.create({
 			postedBy: user.user.id,
@@ -213,7 +211,7 @@ describe('getUserListings service', () => {
 })
 
 describe('getUserProfile service', () => {
-	it('Should throw an APIError if the user not found', async () => {
+	it('Should throw an ApiError if the user not found', async () => {
 		await expect(
 			async () => await service.getUserProfile('5f785989e8421c13d422f934')
 		).rejects.toThrow('The user not found.')
@@ -228,7 +226,7 @@ describe('getUserProfile service', () => {
 })
 
 describe('login service', () => {
-	it('Should throw an APIError if the credentials is invalid', async () => {
+	it('Should throw an ApiError if the credentials is invalid', async () => {
 		await expect(
 			async () =>
 				await service.login({
@@ -283,7 +281,7 @@ describe('logoutAll service', () => {
 })
 
 describe('removeUser service', () => {
-	it('Should throw an APIError if the user not found', async () => {
+	it('Should throw an ApiError if the user not found', async () => {
 		await expect(
 			async () => await service.removeUser('5f785989e8421c13d422f934')
 		).rejects.toThrow('The user not found.')
@@ -301,7 +299,7 @@ describe('unfavoriteListing service', () => {
 	// Clears all test data after every test.
 	afterEach(async () => await dbHandler.clearDatabase())
 
-	it('Should throw an APIError if the listing is not favorited before by the same user', async () => {
+	it('Should throw an ApiError if the listing is not favorited before by the same user', async () => {
 		const user = await service.createUser(user1)
 		const listing = await Listing.create({
 			postedBy: user.user.id,
@@ -340,7 +338,7 @@ describe('unfavoriteListing service', () => {
 })
 
 describe('updateUser service', () => {
-	it('Should throw an APIError if no user found', async () => {
+	it('Should throw an ApiError if no user found', async () => {
 		await expect(
 			async () => await service.updateUser('5f785989e8421c13d422f934')
 		).rejects.toThrow('The user not found.')

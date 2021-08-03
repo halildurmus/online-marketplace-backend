@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const Category = require('./category.model')
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
 			})
 
 			if (!isParentCategoryExists) {
-				throw new APIError(404, `Invalid parent category!`)
+				throw new ApiError(404, `Invalid parent category!`)
 			}
 		}
 
@@ -23,7 +23,7 @@ module.exports = {
 		const categories = await Category.find({ parent: '/' })
 
 		if (!categories) {
-			throw new APIError(404, `The categories not found.`)
+			throw new ApiError(404, `The categories not found.`)
 		}
 
 		const allCategories = []
@@ -43,7 +43,7 @@ module.exports = {
 		const categories = await Category.find({ parent: '/' })
 
 		if (!categories) {
-			throw new APIError(404, `The categories not found.`)
+			throw new ApiError(404, `The categories not found.`)
 		}
 
 		return categories
@@ -53,7 +53,7 @@ module.exports = {
 		const category = await Category.findById(id)
 
 		if (!category) {
-			throw new APIError(404, `The category not found.`)
+			throw new ApiError(404, `The category not found.`)
 		}
 
 		return category
@@ -63,13 +63,13 @@ module.exports = {
 		const category = await Category.findById(id)
 
 		if (!category) {
-			throw new APIError(404, `The category not found.`)
+			throw new ApiError(404, `The category not found.`)
 		}
 
 		const subcategories = await Category.find({ parent: category.category })
 
 		if (!subcategories) {
-			throw new APIError(404, `The subcategory not found.`)
+			throw new ApiError(404, `The subcategory not found.`)
 		}
 
 		return subcategories
@@ -79,7 +79,7 @@ module.exports = {
 		const category = await Category.findById(id)
 
 		if (!category) {
-			throw new APIError(404, 'The category not found.')
+			throw new ApiError(404, 'The category not found.')
 		}
 
 		return await category.remove()
@@ -89,7 +89,7 @@ module.exports = {
 		const category = await Category.findById(id)
 
 		if (!category) {
-			throw new APIError(404, 'The category not found.')
+			throw new ApiError(404, 'The category not found.')
 		}
 
 		const updates = Object.keys(params)

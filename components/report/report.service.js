@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const Listing = require('../listing/listing.model')
 const listingSubjects = require('./listing-subjects')
 const userSubjects = require('./user-subjects')
@@ -9,11 +9,11 @@ module.exports = {
 	async createReport(userId, params) {
 		if (params.reportedListing) {
 			if (!(await Listing.findById(params.reportedListing))) {
-				throw new APIError(404, 'Invalid listing id!')
+				throw new ApiError(404, 'Invalid listing id!')
 			}
 		} else {
 			if (!(await User.findById(params.reportedUser))) {
-				throw new APIError(404, 'Invalid user id!')
+				throw new ApiError(404, 'Invalid user id!')
 			}
 		}
 
@@ -27,7 +27,7 @@ module.exports = {
 		const report = await Report.findById(id)
 
 		if (!report) {
-			throw new APIError(404, 'The report not found.')
+			throw new ApiError(404, 'The report not found.')
 		}
 
 		return report
@@ -52,7 +52,7 @@ module.exports = {
 		const report = await Report.findById(id)
 
 		if (!report) {
-			throw new APIError(404, 'The report not found.')
+			throw new ApiError(404, 'The report not found.')
 		}
 
 		return await report.remove()
@@ -62,7 +62,7 @@ module.exports = {
 		const report = await Report.findById(id)
 
 		if (!report) {
-			throw new APIError(404, 'The report not found.')
+			throw new ApiError(404, 'The report not found.')
 		}
 
 		const updates = Object.keys(params)

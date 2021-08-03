@@ -1,4 +1,4 @@
-const { APIError } = require('../helpers')
+const { ApiError } = require('../helpers')
 
 module.exports = {
 	/**
@@ -8,7 +8,7 @@ module.exports = {
 	 */
 	parseAuthToken(token) {
 		if (!token.startsWith('Bearer ')) {
-			throw new APIError(400, 'Invalid authorization header type.')
+			throw new ApiError(400, 'Invalid authorization header type.')
 		}
 
 		return token.replace('Bearer ', '')

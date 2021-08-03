@@ -1,4 +1,4 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const dbHandler = require('../../tests/db')
 const { isValidOperation } = require('./listing.middleware')
 
@@ -12,10 +12,10 @@ afterEach(async () => await dbHandler.clearDatabase())
 afterAll(async () => await dbHandler.closeDatabase())
 
 describe('isValidOperation middleware', () => {
-	it('Should throw an APIError if the fields to be updated not provided', async () => {
+	it('Should throw an ApiError if the fields to be updated not provided', async () => {
 		const req = { body: {} }
 		const next = jest.fn()
-		const error = new APIError(
+		const error = new ApiError(
 			404,
 			'You need to provide the fields to be updated!'
 		)
@@ -25,10 +25,10 @@ describe('isValidOperation middleware', () => {
 		expect(next).toBeCalledWith(error)
 	})
 
-	it('Should throw an APIError if the operation is invalid', async () => {
+	it('Should throw an ApiError if the operation is invalid', async () => {
 		const req = { body: { views: 1000 } }
 		const next = jest.fn()
-		const error = new APIError(400, `Invalid operation!`)
+		const error = new ApiError(400, `Invalid operation!`)
 
 		await isValidOperation(req, {}, next)
 
@@ -38,7 +38,7 @@ describe('isValidOperation middleware', () => {
 	it('Should call the next function if the operation is valid', async () => {
 		const req = { body: { title: 'iPhone 12 Pro Max New' } }
 		const next = jest.fn()
-		const error = new APIError(400, `Invalid operation!`)
+		const error = new ApiError(400, `Invalid operation!`)
 
 		await isValidOperation(req, {}, next)
 

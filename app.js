@@ -43,7 +43,7 @@ app.get('/health', async (req, res) => {
 	}
 })
 
-// If the error is not an instanceOf APIError, convert it.
+// If the error is not an instanceOf ApiError, convert it.
 // app.use(error.converter)
 // Catch 404 and forward to error handler.
 app.use(error.notFound)

@@ -1,4 +1,4 @@
-const { APIError } = require('../helpers')
+const { ApiError } = require('../helpers')
 const { nodeEnv } = require('../config')
 const { loggers } = require('../utils')
 const httpStatus = require('http-status')
@@ -6,7 +6,7 @@ const logger = loggers.loggerServer
 
 const handleCastErrorDB = (err) => {
 	const message = `Invalid ${err.path}: ${err.value}`
-	return new APIError(400, message)
+	return new ApiError(400, message)
 }
 
 const handleDuplicateFieldsDB = (err) => {
@@ -17,21 +17,21 @@ const handleDuplicateFieldsDB = (err) => {
 
 	const message = `Duplicate field value(s) ${duplicateFields}. Please use another value!`
 
-	return new APIError(400, message)
+	return new ApiError(400, message)
 }
 
 const handleValidationErrorDB = (err) => {
 	const errors = Object.values(err.errors).map((el) => el.message)
 	const message = `Invalid input data. ${errors.join('. ')}`
 
-	return new APIError(400, message)
+	return new ApiError(400, message)
 }
 
 const handleJWTError = () =>
-	new APIError(401, 'Invalid token. Please log in again!')
+	new ApiError(401, 'Invalid token. Please log in again!')
 
 const handleJWTExpiredError = () =>
-	new APIError(401, 'Your token has expired! Please log in again.')
+	new ApiError(401, 'Your token has expired! Please log in again.')
 
 const sendErrorDev = (err, res) => {
 	logger.error('ERROR 💥:', err)
@@ -86,12 +86,12 @@ exports.handler = (err, req, res, next) => {
 	}
 }
 
-// If the error is not an instanceOf APIError, convert it.
+// If the error is not an instanceOf ApiError, convert it.
 exports.converter = (err, req, res, next) => {
 	let convertedError = err
 
-	if (!(err instanceof APIError)) {
-		convertedError = new APIError(err.statusCode, err.message)
+	if (!(err instanceof ApiError)) {
+		convertedError = new ApiError(err.statusCode, err.message)
 	}
 
 	return exports.handler(convertedError, req, res)
@@ -101,7 +101,7 @@ exports.converter = (err, req, res, next) => {
 exports.notFound = (req, res, next) => {
 	const statusCode = httpStatus.NOT_FOUND
 	const message = `${req.url} Route ${httpStatus['404']}`
-	const err = new APIError(statusCode, message)
+	const err = new ApiError(statusCode, message)
 
 	return exports.handler(err, req, res)
 }

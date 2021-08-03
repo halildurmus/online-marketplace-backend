@@ -1,5 +1,5 @@
 // Custom Error class.
-class APIError extends Error {
+class ApiError extends Error {
 	/**
 	 * Default constructor.
 	 * @param {int} 		statusCode 			HTTP status code.
@@ -17,4 +17,4 @@ class APIError extends Error {
 	}
 }
 
-module.exports = APIError
+module.exports = ApiError

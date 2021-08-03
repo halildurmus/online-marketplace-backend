@@ -1,10 +1,10 @@
-const { APIError } = require('../../helpers')
+const { ApiError } = require('../../helpers')
 const service = require('./user.service')
 
 module.exports = {
 	async blockUser(userId, blockUserId) {
 		if (!userId || !blockUserId) {
-			throw new APIError(400, 'You need to provide userId and blockUserId.')
+			throw new ApiError(400, 'You need to provide userId and blockUserId.')
 		}
 
 		return await service.blockUser(userId, blockUserId)
@@ -12,7 +12,7 @@ module.exports = {
 
 	async unblockUser(userId, unblockUserId) {
 		if (!userId || !unblockUserId) {
-			throw new APIError(400, 'You need to provide userId and unblockUserId.')
+			throw new ApiError(400, 'You need to provide userId and unblockUserId.')
 		}
 
 		return await service.unblockUser(userId, unblockUserId)
@@ -20,7 +20,7 @@ module.exports = {
 
 	async createUser(params) {
 		if (!params) {
-			throw new APIError(400, 'You need to provide the required parameters.')
+			throw new ApiError(400, 'You need to provide the required parameters.')
 		}
 
 		return await service.createUser(params)
@@ -28,7 +28,7 @@ module.exports = {
 
 	async favoriteListing(userId, listingId) {
 		if (!userId || !listingId) {
-			throw new APIError(400, 'You need to provide userId and listingId.')
+			throw new ApiError(400, 'You need to provide userId and listingId.')
 		}
 
 		return await service.favoriteListing(userId, listingId)
@@ -89,7 +89,7 @@ module.exports = {
 
 	async unfavoriteListing(userId, listingId) {
 		if (!userId || !listingId) {
-			throw new APIError(400, 'You need to provide userId and listingId.')
+			throw new ApiError(400, 'You need to provide userId and listingId.')
 		}
 
 		return await service.unfavoriteListing(userId, listingId)
