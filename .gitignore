@@ -5,4 +5,4 @@
 .env.development
 .env.production
 .env.test
-/auth-9c17c-firebase-adminsdk-lwygd-3e0c1a8b43.json
+firebase-admin.json
