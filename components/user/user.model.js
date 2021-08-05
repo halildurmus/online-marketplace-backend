@@ -2,7 +2,11 @@ const { isEmail, isMobilePhone } = require('validator')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const { nanoid } = require('nanoid')
-const { androidPackageName, firebaseWebApiKey } = require('../../config')
+const {
+	androidPackageName,
+	firebaseDynamicLinksUrl,
+	firebaseWebApiKey,
+} = require('../../config')
 const got = require('got')
 
 const userSchema = new Schema(
@@ -86,14 +90,15 @@ userSchema.statics.isFavoritedBefore = async (userId, listingId) => {
 	return user.favorites.get(listingId) === 'true'
 }
 
-const generateUserShareUrl = async (userId) => {
+// Generates a Firebase Dynamic Link for the provided userId.
+const generateDynamicLinkForUser = async (userId) => {
 	const response = await got.post(
 		`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${firebaseWebApiKey}`,
 		{
 			json: {
 				dynamicLinkInfo: {
-					domainUriPrefix: 'https://codingwithflutter.page.link',
-					link: `https://codingwithflutter.page.link/user?id=${userId}`,
+					domainUriPrefix: firebaseDynamicLinksUrl,
+					link: `${firebaseDynamicLinksUrl}/user?id=${userId}`,
 					androidInfo: {
 						androidPackageName,
 					},
@@ -111,12 +116,12 @@ const generateUserShareUrl = async (userId) => {
 	}
 }
 
-// Generate a share URL for the user's profile and save it.
+// Every time a new user created, generate a Firebase Dynamic Link for it.
 userSchema.pre('save', async function (next) {
 	const user = this
 
 	if (user.isNew) {
-		user.shareURL = await generateUserShareUrl(user._id)
+		user.shareURL = await generateDynamicLinkForUser(user._id)
 	}
 
 	next()
