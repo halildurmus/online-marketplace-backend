@@ -41,21 +41,19 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-- You need to have **[MongoDB](https://www.mongodb.com)** installed on your pc.
-- Also you need to have a **[Firebase](https://firebase.google.com)** account and setup **[Firebase Authentication](https://firebase.google.com/products/auth)** and **[Firebase Dynamic Links](https://firebase.google.com/products/cloud-messaging)** services.
-
-#### 1. MongoDB Installation
-1. [Install MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
-2. Start the MongoDB instance.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- You need to create a **[Firebase](https://firebase.google.com)** account and setup **[Firebase Authentication](https://firebase.google.com/products/auth)** and **[Firebase Dynamic Links](https://firebase.google.com/products/cloud-messaging)** services.
 
 ### Installation
 
 1. Clone the repo using: `git clone https://github.com/halildurmus/online-marketplace-backend.git`
-2. In the project folder you will find an `example.env` file. Copy it and rename it to `.env`.
+2. In the project root directory, copy the `example.env` file and rename it to `.env`.
 3. Open the `.env` file and change the env variables to fit your environment.
-4. Run `npm i` to install the packages needed for the project.
-5. Run `npm start`
-6. Open your browser and navigate to `localhost:3000/health`.  
+4. Start the **Docker Desktop**.
+5. In the project root directory, run `docker-compose up -d` to start the container for **MongoDB**.
+6. Run `npm i` to install the packages needed for the project.
+7. Run `npm start`
+8. Open your browser and navigate to `localhost:3000/health`.  
 You should now see the uptime data on that page.
 
 ## Roadmap
